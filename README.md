@@ -11,20 +11,21 @@
 ---
 
 ## 🔗 Table of Contents
-- [Overview](#overview)
-- [Motivation](#motivation)
-- [Key Contributions](#key-contributions)
-- [Model Architecture](#model-architecture)
-- [Efficiency Gains](#efficiency-gains)
-- [Getting Started](#getting-started)
+- [Overview](#-overview)
+- [Visualization Results](#-visualization-results)
+- [Motivation](#-motivation)
+- [Key Contributions](#-key-contributions)
+- [Model Architecture](#-model-architecture)
+- [Efficiency Gains](#-efficiency-gains)
+- [Getting Started](#-getting-started)
   - [Installation](#installation)
   - [Prerequisites](#prerequisites)
   - [Running the Model](#running-the-model)
-- [Experiments](#experiments)
-- [Results](#results)
-- [Citation](#citation)
-- [Contact](#contact)
-- [License](#license)
+- [Experiments](#-experiments)
+- [Results](#-results)
+- [Citation](#-citation)
+- [Contact](#-contact)
+- [License](#-license)
 
 ---
 

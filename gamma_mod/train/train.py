@@ -13,7 +13,7 @@
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
-import glob
+
 import os
 import copy
 from dataclasses import dataclass, field
@@ -23,21 +23,24 @@ import pathlib
 from typing import Dict, Optional, Sequence, List
 import json
 import torch
-
 import transformers
+import tokenizers
+
 
 from gamma_mod.constants import IGNORE_INDEX, IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, \
     DEFAULT_IM_END_TOKEN, VISION_TOKEN, TEXT_TOKEN
 from torch.utils.data import Dataset
 from gamma_mod.train.llava_trainer import LLaVATrainer
-
 from gamma_mod import conversation as conversation_lib
 from gamma_mod.model import *
-from gamma_mod.model.language_model import llava_llama_moe,llava_llama_mod
+from gamma_mod.mm_utils import tokenizer_image_token, get_model_name_from_path
 from gamma_mod.mm_utils import tokenizer_image_token
 from gamma_mod.model.apply_lavin import set_lavin
 from PIL import Image
 import random
+from gamma_mod.model.builder import load_pretrained_model
+from gamma_mod.utils import disable_torch_init
+
 from gamma_mod.model.language_model.llava_llama_mod import MoDLLaVALlamaForCausalLM
 from gamma_mod.model.language_model.llava_llama import LlavaLlamaForCausalLM
 from gamma_mod.model.language_model.llava_phi3 import LlavaPhiForCausalLM
@@ -47,7 +50,6 @@ local_rank = None
 def rank0_print(*args):
     if local_rank == 0:
         print(*args)
-
 
 @dataclass
 class ModelArguments:
@@ -92,7 +94,7 @@ class ModelArguments:
         default="sparse",
         metadata={
             "help": "The backend to be used for half precision.",
-            "choices": ["first_half", "second_half", "sparse", "dense"],
+            "choices": ["first_half", "second_half", "sparse", "dense", "first_last_dense","last_two_thirds","first_five_dense","arank_mod"],
         },
     )
     mod_layers_idx: Optional[List[int]] = field(default=None, metadata={"help": "where to place moe layers."})
@@ -116,7 +118,6 @@ class DataArguments:
 
 @dataclass
 class TrainingArguments(transformers.TrainingArguments):
-    logging_steps: int = field(default=1000000)
     cache_dir: Optional[str] = field(default=None)
     optim: str = field(default="adamw_torch")
     remove_unused_columns: bool = field(default=False)
@@ -148,7 +149,7 @@ class TrainingArguments(transformers.TrainingArguments):
     lora_weight_path: str = ""
     lora_bias: str = "none"
     group_by_modality_length: bool = field(default=False)
-    mm_projector_lr: Optional[float] = None
+
     lavin_enable: bool = False
     lavin_hidden_dim: int = 8
     lavin_in_features: int = 512
@@ -157,7 +158,7 @@ class TrainingArguments(transformers.TrainingArguments):
     lavin_scale: float = 1.
     lavin_t: float = 10.
     pretrain_lavin_adapter: str=None
-    # max_steps: int = 2
+    # max_steps: int = 1
 
 
 def maybe_zero_3(param, ignore_status=False, name=None):
@@ -286,6 +287,23 @@ def safe_save_model_for_hf_trainer(trainer: transformers.Trainer,
         save_model_in_parts(llama_state_dict, output_dir)
         print(f"LlavaLlamaModel checkpoint saved ")
         return
+    # if getattr(trainer.args, "tune_mm_mlp_adapter", False):
+    #     # for key in trainer.model.state_dict().keys():
+    #     #     print(key)
+    #     # exit()
+    #     # for name, param in trainer.model.named_parameters():
+    #     #     print(f"{name}: {param.dtype}")
+    #     # exit()
+    #     # trainer.model.to(dtype=torch.float32)
+    #     full_state_dict = trainer.model.state_dict()
+
+    #     # print("Parameters to be saved:")
+    #     # for k in llama_state_dict.keys():
+    #     #     print(k)
+    #     trainer.model.config.save_pretrained(output_dir)
+    #     save_model_in_parts(full_state_dict, output_dir)
+    #     print(f"LlavaLlamaModel checkpoint saved ")
+    #     return
     if getattr(trainer.args, "tune_mm_mlp_adapter", False):
         # Only save Adapter
         keys_to_match = ['mm_projector','align_stages']
@@ -306,7 +324,6 @@ def safe_save_model_for_hf_trainer(trainer: transformers.Trainer,
             else:
                 torch.save(weight_to_save, os.path.join(output_dir, f'mm_projector.bin'))
         return
-
     if trainer.deepspeed:
         setattr(trainer.model.config, "delay_load", False)
         torch.cuda.synchronize()
@@ -352,6 +369,7 @@ def smart_tokenizer_and_embedding_resize(
 def _tokenize_fn(strings: Sequence[str],
                  tokenizer: transformers.PreTrainedTokenizer) -> Dict:
     """Tokenize a list of strings."""
+    # tokenizer.pad_token = tokenizer.eos_token # small trick when changing llm to llama3
     tokenized_list = [
         tokenizer(
             text,
@@ -677,6 +695,94 @@ def preprocess_llama_2(
         labels=targets,
     )
 
+def preprocess_llama_3(
+    sources,
+    tokenizer: transformers.PreTrainedTokenizer,
+    has_image: bool = False
+) -> Dict:
+    conv = conversation_lib.conv_llama_3.copy()
+    roles = {"human": conv.roles[0], "gpt": conv.roles[1]}
+
+    # Apply prompt templates
+    conversations = []
+    for i, source in enumerate(sources):
+        if roles[source[0]["from"]] != conv.roles[0]:
+            # Skip the first one if it is not from human
+            source = source[1:]
+
+        conv.messages = []
+        for j, sentence in enumerate(source):
+            role = roles[sentence["from"]]
+            assert role == conv.roles[j % 2], f"{i}"
+            conv.append_message(role, sentence["value"])
+        conversations.append(conv.get_prompt())
+
+    # Tokenize conversations
+
+    if has_image:
+        input_ids = torch.stack([tokenizer_image_token(prompt, tokenizer, return_tensors='pt') for prompt in conversations], dim=0)
+    else:
+        input_ids = tokenizer(
+            conversations,
+            return_tensors="pt",
+            padding="longest",
+            max_length=tokenizer.model_max_length,
+            truncation=True,
+        ).input_ids
+
+    targets = input_ids.clone()
+    
+    offset = 0 if input_ids[0][0] != tokenizer.bos_token_id else 1
+    
+    assert conv.sep_style == conversation_lib.SeparatorStyle.TWO
+    # Mask targets
+    sep = conv.sep + conv.roles[1] + ":"
+    # Llama3 tokenizer has the token for whitespace
+    # Typically, the token after whitespace will be naturally encoded as one token with whitespace
+    # some special cases like ": 3" will be encoded as :, whitespace, 3; 3 tokens. Only in this case, the loss on whitespace will be calculated
+    for conversation, target in zip(conversations, targets):
+        total_len = int(target.ne(tokenizer.pad_token_id).sum())
+
+        rounds = conversation.split(conv.sep2)
+        cur_len = 1
+        target[:cur_len] = IGNORE_INDEX
+        
+        for i, rou in enumerate(rounds):
+            if rou == "":
+                break
+
+            parts = rou.split(sep)
+            if len(parts) != 2:
+                break
+            parts[0] += sep
+
+            if has_image:
+                round_len = len(tokenizer_image_token(rou, tokenizer))
+                instruction_len = len(tokenizer_image_token(parts[0], tokenizer)) - offset
+            else:
+                round_len = len(tokenizer(rou).input_ids)
+                instruction_len = len(tokenizer(parts[0]).input_ids) - offset
+
+            target[cur_len : cur_len + instruction_len] = IGNORE_INDEX
+
+            cur_len += round_len + (1 - offset) #starting from index 0, then cur_len will not cover eos token
+
+        if cur_len < tokenizer.model_max_length:
+            if cur_len != total_len:
+                target[:] = IGNORE_INDEX
+                print(
+                    f"WARNING: tokenization mismatch: {cur_len} vs. {total_len}."
+                    f" (ignored)"
+                )
+
+    if input_ids[0][0] != tokenizer.bos_token_id:
+        input_ids = [torch.cat([torch.LongTensor([tokenizer.bos_token_id]), i]) for i in input_ids]
+        targets = [torch.cat([torch.LongTensor([IGNORE_INDEX]), i]) for i in targets]
+
+    return dict(
+        input_ids=input_ids,
+        labels=targets,
+    )
 
 def preprocess_v1(
         sources,
@@ -848,7 +954,97 @@ def preprocess_plain(
         target[:tokenized_len] = IGNORE_INDEX
 
     return dict(input_ids=input_ids, labels=targets)
+def preprocess_phi3(
+    sources,
+    tokenizer: transformers.PreTrainedTokenizer,
+    has_image: bool = False
+) -> Dict:
+    conv = conversation_lib.default_conversation.copy()
+    roles = {"human": conv.roles[0], "gpt": conv.roles[1]}
 
+    # Apply prompt templates
+    conversations = []
+    for i, source in enumerate(sources):
+        if roles[source[0]["from"]] != conv.roles[0]:
+            # Skip the first one if it is not from human
+            source = source[1:]
+
+        conv.messages = []
+        for j, sentence in enumerate(source):
+            role = roles[sentence["from"]]
+            assert role == conv.roles[j % 2], f"{i}"
+            conv.append_message(role, sentence["value"])
+        conversations.append(conv.get_prompt())
+
+    # Tokenize conversations
+    if has_image:
+        input_ids = torch.stack([tokenizer_image_token(prompt, tokenizer, return_tensors='pt') for prompt in conversations], dim=0)
+    else:
+        input_ids = tokenizer(
+            conversations,
+            return_tensors="pt",
+            padding="longest",
+            max_length=tokenizer.model_max_length,
+            truncation=True,
+        ).input_ids
+    targets = input_ids.clone()
+    assert conv.sep_style == conversation_lib.SeparatorStyle.MPT
+
+    # Mask targets
+    sep = conv.sep + conv.roles[1]
+    for conversation, target in zip(conversations, targets):
+        total_len = int(target.ne(tokenizer.pad_token_id).sum())
+
+        rounds = conversation.split(conv.sep)
+        re_rounds = [conv.sep.join(rounds[:3])]  # system + user + gpt
+        for conv_idx in range(3, len(rounds), 2):
+            re_rounds.append(conv.sep.join(rounds[conv_idx:conv_idx+2]))    # user + gpt
+        cur_len = 0 
+        target[:cur_len] = IGNORE_INDEX
+        for i, rou in enumerate(re_rounds):
+            if rou == "":
+                break
+
+            parts = rou.split(sep)
+            if len(parts) != 2:
+                break
+            parts[0] += sep
+
+            if has_image:
+                round_len = len(tokenizer_image_token(rou, tokenizer))
+                instruction_len = len(tokenizer_image_token(parts[0], tokenizer)) - 1
+            else:
+                round_len = len(tokenizer(rou).input_ids)
+                instruction_len = len(tokenizer(parts[0]).input_ids) - 1
+
+            if i == 0:
+                round_len += 1
+                instruction_len += 1
+            else:
+                round_len -= 2
+                instruction_len -= 2
+
+            if i != 0 and getattr(tokenizer, 'legacy', False) and IS_TOKENIZER_GREATER_THAN_0_14:
+                round_len += 1
+                instruction_len += 1
+
+            target[cur_len : cur_len + instruction_len] = IGNORE_INDEX
+
+            cur_len += round_len
+        target[cur_len:] = IGNORE_INDEX
+
+        if cur_len < tokenizer.model_max_length:
+            if cur_len != total_len:
+                target[:] = IGNORE_INDEX
+                print(
+                    f"WARNING: tokenization mismatch: {cur_len} vs. {total_len}."
+                    f" (ignored)"
+                )
+
+    return dict(
+        input_ids=input_ids,
+        labels=targets,
+    )
 
 def preprocess(
         sources: Sequence[str],
@@ -868,8 +1064,12 @@ def preprocess(
         return preprocess_llama_2(sources, tokenizer, has_image=has_image)
     if conversation_lib.default_conversation.version.startswith("v1"):
         return preprocess_v1(sources, tokenizer, has_image=has_image)
+    if conversation_lib.default_conversation.version.startswith("v3"): # for llama 3 tokenizer
+        return preprocess_llama_3(sources, tokenizer, has_image=has_image)
     if conversation_lib.default_conversation.version == "mpt":
         return preprocess_mpt(sources, tokenizer)
+    if conversation_lib.default_conversation.version == "phi3":
+        return preprocess_phi3(sources, tokenizer, has_image=has_image)
     # add end signal and concatenate together
     conversations = []
     for source in sources:
@@ -1017,6 +1217,7 @@ class DataCollatorForSupervisedDataset(object):
     def __call__(self, instances: Sequence[Dict]) -> Dict[str, torch.Tensor]:
         input_ids, labels = tuple([instance[key] for instance in instances]
                                   for key in ("input_ids", "labels"))
+        # self.tokenizer.pad_token = self.tokenizer.eos_token # usual trick when changing llm to llama3
         input_ids = torch.nn.utils.rnn.pad_sequence(
             input_ids,
             batch_first=True,
@@ -1054,7 +1255,6 @@ def make_supervised_data_module(tokenizer: transformers.PreTrainedTokenizer,
                 data_collator=data_collator)
 def train():
     global local_rank
-    
     parser = transformers.HfArgumentParser(
         (ModelArguments, DataArguments, TrainingArguments))
     model_args, data_args, training_args = parser.parse_args_into_dataclasses()
@@ -1090,30 +1290,43 @@ def train():
                     **bnb_model_from_pretrained_args
                 )
             if model_args.mod_enable:
-                print("loading mod-llava-hr")
-                model = MoDLLaVALlamaForCausalLM.from_pretrained(
+                if 'Phi' in model_args.model_name_or_path:
+                    print("loading llava-phi3")
+                    model = LlavaPhiForCausalLM.from_pretrained(
                         model_args.model_name_or_path,
-                        torch_dtype=torch.float32,  # Ensure float32
                         cache_dir=training_args.cache_dir,
                         **bnb_model_from_pretrained_args
                     )
+                else:
+                    print("loading MoD Model")
+                    model = MoDLLaVALlamaForCausalLM.from_pretrained(
+                            model_args.model_name_or_path,
+                            cache_dir=training_args.cache_dir,
+                            **bnb_model_from_pretrained_args
+                        )
             else: # pretrain in here
-                print("loading llava for pretrain")
-                model = LlavaLlamaForCausalLM.from_pretrained(
-                    model_args.model_name_or_path,
-                    cache_dir=training_args.cache_dir,
-                    **bnb_model_from_pretrained_args
-                )
-        ################## MOE #################################
+                if 'Phi' in model_args.model_name_or_path:
+                    print("loading llava-phi3")
+                    model = LlavaPhiForCausalLM.from_pretrained(
+                        model_args.model_name_or_path,
+                        cache_dir=training_args.cache_dir,
+                        **bnb_model_from_pretrained_args
+                    )
+                else:
+                    print("loading llava")
+                    model = LlavaLlamaForCausalLM.from_pretrained(
+                        model_args.model_name_or_path,
+                        cache_dir=training_args.cache_dir,
+                        **bnb_model_from_pretrained_args
+                    )
         else:
             model = MoELLaVALlamaForCausalLM.from_pretrained(
                     model_args.model_name_or_path,
                     cache_dir=training_args.cache_dir,
-                    # attn_implementation="flash_attention_2",
-                    # torch_dtype=torch.bfloat16,
                     **bnb_model_from_pretrained_args
                 )
     else:
+        print("loading llama")
         model = transformers.LlamaForCausalLM.from_pretrained(
             model_args.model_name_or_path,
             cache_dir=training_args.cache_dir,
@@ -1138,10 +1351,10 @@ def train():
             def make_inputs_require_grad(module, input, output):
                 output.requires_grad_(True)
             model.get_input_embeddings().register_forward_hook(make_inputs_require_grad)
-    # training_args.mod_enable = model_args.mod_enable
-    # if model_args.mod_enable:
-    #     model.initialize_mod_modules(model_args=model_args)
-    #     print("MoD enabled")
+    training_args.mod_enable = model_args.mod_enable
+    if model_args.mod_enable:
+        model.initialize_mod_modules(model_args=model_args)
+        print("MoD enabled")
     ############# MOE #############
     # training_args.moe_enable = model_args.moe_enable
     # if model_args.moe_enable:
@@ -1190,12 +1403,17 @@ def train():
             )
     elif model_args.version == "v0.5":
         tokenizer.pad_token = tokenizer.unk_token
+    elif model_args.version == "v3":
+        tokenizer.pad_token = "<|reserved_special_token_0|>" # only for llama3
+        conversation_lib.default_conversation = conversation_lib.conv_templates["llama_3"]
     else:
         tokenizer.pad_token = tokenizer.unk_token
         if model_args.version in conversation_lib.conv_templates:
             conversation_lib.default_conversation = conversation_lib.conv_templates[model_args.version]
         else:
             conversation_lib.default_conversation = conversation_lib.conv_templates["vicuna_v1"]
+    
+
     ############ if scale up llm ############
     if model_args.scale_up_train_llm:
         for layer in model.model.layers[-24:]:
@@ -1244,7 +1462,6 @@ def train():
             rank0_print(trainable_params)
             rank0_print('Enable MultiPath Encoder')
             rank0_print('  + Number of trainable params: %.2fM' % (total / 1e6))
-            
         if training_args.bits in [4, 8]:
             model.get_model().mm_projector.to(dtype=compute_dtype, device=training_args.device)
 
@@ -1252,8 +1469,6 @@ def train():
         training_args.use_im_start_end = model_args.mm_use_im_start_end
         model.config.mm_use_im_patch_token = model_args.mm_use_im_patch_token
         model.initialize_vision_tokenizer(model_args, tokenizer=tokenizer)
-    # set lavin
-    # data_args.lavin_enable=training_args.lavin_enable
     setattr(data_args,'lavin_enable',training_args.lavin_enable)
     if training_args.lavin_enable:
         if training_args.bits == 16:

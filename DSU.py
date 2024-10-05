@@ -2,10 +2,10 @@ import transformers
 import json
 from copy import deepcopy
 import torch
-from llava_hr.model.language_model.llava_llama_moe import MoELLaVALlamaForCausalLM
-from llava_hr.model import *
-from llava_hr.mm_utils import tokenizer_image_token, get_model_name_from_path, KeywordsStoppingCriteria
-from llava_hr.model.builder import load_pretrained_model
+from gamma_mod.model.language_model.llava_llama_moe import MoELLaVALlamaForCausalLM
+from gamma_mod.model import *
+from gamma_mod.mm_utils import tokenizer_image_token, get_model_name_from_path, KeywordsStoppingCriteria
+from gamma_mod.model.builder import load_pretrained_model
 
 model_path = '/data/luogen_code/LLaVA-HR-OCR/checkpoints/llava-hr-mod-7b-last_two_thirds-img-answer-0.5'
 model_name = get_model_name_from_path(model_path)

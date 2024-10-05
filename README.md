@@ -154,12 +154,13 @@ Gamma-MOD was tested on **three popular MLLMs** across **9 benchmark datasets**.
 
 ## 📈 Results
 
-| Model       | Training Time Reduction | Inference Time Reduction | Accuracy Drop |
+| Model       | Training Time Reduction | Inference Time Reduction | Accuracy |
 |-------------|-------------------------|--------------------------|---------------|
-| LLaVA-HR    | 31.0%                   | 53.2%                    | 1.5%          |
-| Mini-Gemini | 25.6%                   | 48.1%                    | 1.8%          |
+| LLaVA-HR-7B    | 31.0%                   | 53.2%                    | -1.5%          |
+| LLaVA-HR-13B    | 18.8%                   | 50.4%                    | -0.3%         |
+| LLaVA-HR-X-13B    | 17.4%                 | 58.6%                    | +0.4%          |
 
-For more details, check the [full report](link_to_experiment_report).
+For more details, check the [full report](link_to_experiment_report).(Coming soon!!!!!!!!!!)
 
 ---
 
@@ -193,7 +194,3 @@ This project is licensed under the MIT License - see the [LICENSE](link_to_licen
 ## 👀 Acknowledgments
 
 Special thanks to all contributors and the LLaVA project for inspiration.
-
----
-
-![Gamma-MOD Footer Banner](link_to_footer_banner_image)

@@ -39,7 +39,29 @@
 ![Gamma-MOD Banner](/asset/motivations.png)
 
 ---
+## 🎨 Visualization Results
 
+Our Gamma-MOD approach demonstrates impressive efficiency in routing tokens and focusing on critical information. Fig. 4 illustrates these results visually.
+
+
+### Key Observations:
+![Visualization of Routing and Skipped Content](/asset/visualization.png)
+1. **Consistent Routing Patterns** (Fig. 4a):
+   - Question tokens are mostly retained
+   - Image tokens show the highest redundancy and are routed the most
+   - Response tokens fall between these two extremes
+
+2. **Efficient Content Skipping** (Fig. 4b):
+   - Gray areas in images represent skipped tokens (often background or less relevant pixels)
+   - White areas highlight regions the model focuses on more intensely
+
+3. **Improved Focus on Critical Information**:
+   - By routing out redundant tokens, the model can allocate more computational resources to important areas
+   - Example: In the IQ test image (middle of first row), the model concentrates on arithmetic and geometric aspects, leading to more accurate responses
+
+This visualization demonstrates how Gamma-MOD effectively reduces computational overhead while maintaining the model's ability to process and respond to complex multimodal inputs.
+
+---
 ## 🎯 Motivation
 
 Despite advancements in MLLMs, their **high computational costs** limit practical application, particularly for real-time inference. While **Mixture-of-Experts (MoE)** techniques help reduce active parameters, Gamma-MOD reduces **activated tokens**, offering superior efficiency.

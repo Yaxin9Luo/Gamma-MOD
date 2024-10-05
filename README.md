@@ -1,6 +1,6 @@
 # Gamma-MOD: Mixture-of-Depth Adaptation for Multimodal Large Language Models
 
-![Gamma-MOD Banner](link_to_banner_image)
+![Gamma-MOD Banner](/asset/gamma_logo.jpg)
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](link_to_license)
@@ -30,14 +30,13 @@
 
 ## 🚀 Overview
 
-![Logo or Key Visual](link_to_logo_or_key_image)
-
 **Gamma-MOD** is inspired by **activated tokens** and aims to identify layer-level redundancy using a novel metric called **ARank** (Rank of Attention Maps). By transforming dense MLLM layers into **Mixture-of-Depth** layers, Gamma-MOD saves on computational costs while preserving model accuracy.
 
 ### Key Features:
 - **ARank Metric**: Guides the replacement of redundant layers with MoD layers.
 - **Shared Vision-Language Router**: Facilitates cross-modality token routing.
 - **Masked Routing Learning**: Prevents critical tokens from being skipped during model adaptation.
+![Gamma-MOD Banner](/asset/motivations.png)
 
 ---
 
@@ -62,7 +61,7 @@ Gamma-MOD involves two main stages:
 1. **Vision-Language Alignment**: Aligns visual and textual modalities, using ARank to identify redundant layers.
 2. **Instruction Tuning**: Integrates MoD layers, with **masked routing learning** to avoid skipping critical tokens.
 
-![Model Diagram](link_to_model_architecture_image)
+![Model Diagram](/asset/model_arch.png)
 
 ### Example Flow:
 1. **Input Processing**: Visual and text features are aligned.
@@ -78,9 +77,9 @@ Gamma-MOD results in significant efficiency improvements:
 - **Inference time**: Reduced by **53.2%**.
 - **FLOPs Reduction**: **51.6%** with minimal impact on accuracy.
 
-| ![Training Efficiency](link_to_training_efficiency_image) | ![Inference Gains](link_to_inference_gains_image) |
-|:--:|:--:|
-| Training Efficiency | Inference Gains |
+| Training Efficiency |
+![Training Efficiency](/asset/Efficiency.png)
+
 
 ---
 
@@ -88,28 +87,32 @@ Gamma-MOD results in significant efficiency improvements:
 
 ### Installation
 
-First, clone the repository:
+1. Clone the repository and navigate to the LLaVA-HR folder:
 
 ```bash
-git clone https://github.com/Yaxin9Luo/Gamma-MOD.git
+git clone https://github.com/luogen1996/LLaVA-HR.git
+cd LLaVA-HR
 ```
 
-### Prerequisites
-
-- Python >= 3.8
-- PyTorch >= 1.12
-- Additional dependencies can be found in `requirements.txt`:
+2. Create and activate a new conda environment:
 
 ```bash
-pip install -r requirements.txt
+conda create -n llava-hr python=3.10 -y
+conda activate llava-hr
 ```
 
-### Running the Model
-
-To run Gamma-MOD with a pre-trained MLLM:
+3. Upgrade pip and install the package:
 
 ```bash
-python run_gamma_mod.py --config configs/model_config.yaml
+pip install --upgrade pip  # enable PEP 660 support
+pip install -e .
+```
+
+4. Install additional packages for training:
+
+```bash
+pip install ninja
+pip install flash-attn --no-build-isolation
 ```
 
 ---
@@ -121,7 +124,8 @@ Gamma-MOD was tested on **three popular MLLMs** across **9 benchmark datasets**.
 - **LLaVA-HR**: Training time reduced by **31%** and inference time by **53.2%**, with only **1.5%** accuracy drop.
 - **Generalization**: Demonstrated the ability to generalize across different MLLMs.
 
-![Experimental Results](link_to_experimental_results_image)
+![Experimental Results](/asset/compare_others.png)
+![Experimental Results](/asset/scalable.png)
 
 ---
 

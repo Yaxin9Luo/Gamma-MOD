@@ -1,0 +1,271 @@
+#    Copyright 2023 Haotian Liu
+#
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+
+
+import torch
+import torch.nn as nn
+from transformers import AutoConfig, AutoModelForCausalLM, \
+    LlamaConfig, LlamaModel, LlamaForCausalLM
+from transformers.modeling_outputs import CausalLMOutputWithPast
+from ..llava_arch import LlavaMetaModel, LlavaMetaForCausalLM
+from dataclasses import dataclass
+from typing import Optional, Tuple, Union, List
+from torch.nn import functional as F
+from einops import rearrange
+from torch.nn import CrossEntropyLoss
+from transformers.models.llama.modeling_llama import logger
+from transformers.utils import ModelOutput
+from transformers.models.llama.modeling_llama import LlamaAttention,LlamaMLP,LlamaRMSNorm,rotate_half,apply_rotary_pos_emb,repeat_kv
+import math
+import torch.utils.checkpoint
+import types
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import entropy
+import numpy as np
+from scipy.special import softmax
+
+class LlavaConfig(LlamaConfig):
+    model_type = "llava"
+
+
+class LlavaLlamaModel(LlavaMetaModel, LlamaModel):
+    config_class = LlavaConfig
+
+    def __init__(self, config: LlamaConfig):
+        super(LlavaLlamaModel, self).__init__(config)
+# def compute_attention_rank(attention_weights, layer_num):
+#     """
+#     Compute the rank of attention weights for each head in each layer.
+
+#     Args:
+#         attention_weights (torch.Tensor): Attention weights for a layer,
+#                                           shape (batch_size, num_heads, seq_length, seq_length).
+#         layer_num (int): The layer number to process.
+
+#     Returns:
+#         avg_head_rank (float): The average rank of the attention matrices for each head in the layer.
+#     """
+#     if len(attention_weights.shape) == 3:
+#         attention_weights = attention_weights.unsqueeze(0)
+#     bs, num_heads, seq_len, _ = attention_weights.shape
+#     # Ensure attention weights are probability distributions
+#     attention_weights = F.softmax(attention_weights, dim=-1)
+#     head_ranks = []
+#     for head in range(num_heads):
+#         # Get the attention weights for the current head
+#         attn = attention_weights[0, head]  # Shape: (seq_length, seq_length)
+
+#         # Cast to float32 to ensure full precision calculations
+#         attn = attn.float()
+
+#         # Compute the rank of the attention matrix for the current head
+#         rank = torch.linalg.matrix_rank(attn).item()
+#         head_ranks.append(rank)
+
+#     # Compute the average rank across all heads
+#     if head_ranks:
+#         avg_head_rank = sum(head_ranks) / len(head_ranks)
+#     else:
+#         avg_head_rank = 0
+#         print(f"Warning: No valid ranks computed for layer {layer_num}.")
+
+#     print(f"Layer {layer_num + 1}, Heads Avg Rank: {avg_head_rank:.2f}")
+#     return avg_head_rank
+def compute_attention_rank(attention_weights, layer_num):
+    """
+    Compute the rank of attention weights for each head in each layer.
+
+    Args:
+        attention_weights (torch.Tensor): Attention weights for a layer,
+                                          shape (batch_size, num_heads, seq_length, seq_length).
+        layer_num (int): The layer number to process.
+
+    Returns:
+        avg_head_rank (float): The average rank of the attention matrices for each head in the layer.
+    """
+    num_heads, seq_len, _ = attention_weights.shape
+    causal_mask = torch.tril(torch.ones(seq_len, seq_len, device=attention_weights.device))
+    diagonal_mask = torch.eye(seq_len, device=attention_weights.device).bool()
+    head_ranks = []
+    for head in range(num_heads):
+        attn = attention_weights[head]
+        attn = causal_mask * attn
+        attn = attn.masked_fill(diagonal_mask, 0)
+        attn = attn.float()
+        rank = torch.linalg.matrix_rank(attn).item()
+        head_ranks.append(rank)
+    
+    avg_head_rank = sum(head_ranks) / num_heads
+    print(f"Layer {layer_num+1}, Heads Avg Rank: {avg_head_rank:.2f}")
+    # num_heads, seq_len, _ = attention_weights.shape
+    # diagonal_mask = torch.eye(seq_len, device=attention_weights.device).bool()
+    # causal_mask = torch.tril(torch.ones(seq_len, seq_len, device=attention_weights.device))
+    # # attention_weights = F.softmax(attention_weights*causal_mask, dim=-1)
+    # attention_weights = causal_mask * attention_weights
+    # attention_weights = attention_weights.masked_fill(diagonal_mask, 0)
+    
+    # # attention_weights = F.softmax(attention_weights, dim=-1) 
+    # attn = attention_weights.float()
+    # rank = torch.linalg.matrix_rank(attn).item()
+    # rank = rank.mean(dim=0)
+    # print(f"Layer {layer_num + 1},Avg Rank: {rank:.2f}")
+def visualize_attention(attention_weights, layer_num, file_path):
+    """
+    Visualize and save average attention weights for a specific layer.
+
+    Parameters:
+    attention_weights (tensor): The attention weights from the model, shape (num_heads, seq_len, seq_len).
+    layer_num (int): The layer number to visualize.
+    file_path (str): The path where the image will be saved.
+    """
+    attention_weights = F.softmax(attention_weights, dim=-1)
+    
+    avg_attention = attention_weights.mean(dim=0).detach().cpu().numpy()
+    
+    avg_attention -= avg_attention.min()
+    avg_attention /= avg_attention.max()
+    avg_attention = np.log(avg_attention + 1e-6)
+    avg_attention -= avg_attention.min()
+    avg_attention /= avg_attention.max()
+    ########## enhance reds and suppress blues to make plot more visible
+    avg_attention = np.where(avg_attention < 0.5, 0.0, avg_attention)
+    plt.figure(figsize=(14, 12))
+    
+    cmap = sns.color_palette("Reds", as_cmap=True)
+    
+    # Apply log scaling to the heatmap for better contrast 
+    sns.heatmap(avg_attention, cmap=cmap, square=True,vmin=0.0, vmax=1.0)
+
+    plt.title(f'Average Attention Weights - Layer {layer_num + 1}')
+    plt.axis('off')
+    
+    plt.savefig(file_path, dpi=400, bbox_inches='tight')
+    plt.close()
+    
+class LlavaLlamaForCausalLM(LlamaForCausalLM, LlavaMetaForCausalLM):
+    config_class = LlavaConfig
+
+    def __init__(self, config):
+        super(LlamaForCausalLM, self).__init__(config)
+        self.model = LlavaLlamaModel(config)
+
+        self.lm_head = nn.Linear( config.hidden_size, config.vocab_size, bias=False)
+
+        # Initialize weights and apply final processing
+        self.post_init()
+
+    def get_model(self):
+        return self.model
+
+    def forward(
+        self,
+        input_ids: torch.LongTensor = None,
+        attention_mask: Optional[torch.Tensor] = None,
+        past_key_values: Optional[List[torch.FloatTensor]] = None,
+        inputs_embeds: Optional[torch.FloatTensor] = None,
+        labels: Optional[torch.LongTensor] = None,
+        use_cache: Optional[bool] = None,
+        output_attentions: Optional[bool] = None,
+        output_hidden_states: Optional[bool] = None,
+        images: Optional[torch.FloatTensor] = None,
+        return_dict: Optional[bool] = None,
+    ) -> Union[Tuple, CausalLMOutputWithPast]:
+        output_attentions = output_attentions if output_attentions is not None else self.config.output_attentions
+        output_hidden_states = (
+            output_hidden_states if output_hidden_states is not None else self.config.output_hidden_states
+        )
+        return_dict = return_dict if return_dict is not None else self.config.use_return_dict
+
+        input_ids, attention_mask, past_key_values, inputs_embeds, labels = self.prepare_inputs_labels_for_multimodal(input_ids, attention_mask, past_key_values, labels, images)
+        # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
+        outputs = self.model(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            past_key_values=past_key_values,
+            inputs_embeds=inputs_embeds,
+            use_cache=use_cache,
+            output_attentions=output_attentions,
+            output_hidden_states=output_hidden_states,
+            return_dict=return_dict
+        )
+
+        # attention_weights = outputs[1] # visualize    
+        # attention_weights = outputs.attentions
+        # for layer_num in range(len(attention_weights)):
+        #     attn = attention_weights[layer_num][0]
+        #     avg_head_rank = compute_attention_rank(attn,layer_num)
+        # exit()
+        # # Loop through all layers and heads
+        # for layer_num in range(len(attention_weights)):
+        #     attn = attention_weights[layer_num][0]
+        #     file_path = f'/data/luogen_code/LLaVA-HR-OCR/visualize/attention_layer{layer_num + 1}.png'
+        #     visualize_attention(attn, layer_num, file_path)
+        
+
+        
+        hidden_states = outputs[0]
+        
+        
+        logits = self.lm_head(hidden_states)
+
+        loss = None
+        if labels is not None:
+            # Shift so that tokens < n predict n
+            shift_logits = logits[..., :-1, :].contiguous()
+            shift_labels = labels[..., 1:].contiguous()
+            # Flatten the tokens
+            loss_fct = CrossEntropyLoss()
+            shift_logits = shift_logits.view(-1, self.config.vocab_size)
+            shift_labels = shift_labels.view(-1)
+            # Enable model/pipeline parallelism
+            shift_labels = shift_labels.to(shift_logits.device)
+            loss = loss_fct(shift_logits, shift_labels)
+
+        if not return_dict:
+            output = (logits,) + outputs[1:]
+            return (loss,) + output if loss is not None else output
+
+        return CausalLMOutputWithPast(
+            loss=loss,
+            logits=logits,
+            past_key_values=outputs.past_key_values,
+            hidden_states=outputs.hidden_states,
+            attentions=outputs.attentions,
+        )
+
+    def prepare_inputs_for_generation(
+        self, input_ids, past_key_values=None, attention_mask=None, inputs_embeds=None, **kwargs
+    ):
+        if past_key_values:
+            input_ids = input_ids[:, -1:]
+
+        # if `inputs_embeds` are passed, we only want to use them in the 1st generation step
+        if inputs_embeds is not None and past_key_values is None:
+            model_inputs = {"inputs_embeds": inputs_embeds}
+        else:
+            model_inputs = {"input_ids": input_ids}
+
+        model_inputs.update(
+            {
+                "past_key_values": past_key_values,
+                "use_cache": kwargs.get("use_cache"),
+                "attention_mask": attention_mask,
+                "images": kwargs.get("images", None),
+            }
+        )
+        return model_inputs
+
+AutoConfig.register("llava", LlavaConfig)
+AutoModelForCausalLM.register(LlavaConfig, LlavaLlamaForCausalLM)

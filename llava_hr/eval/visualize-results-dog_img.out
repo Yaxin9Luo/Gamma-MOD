@@ -1,0 +1,346 @@
+[2024-09-11 16:00:04,590] [INFO] [real_accelerator.py:110:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+loading MOD-LLaVA-hr
+Image resolution: 640x611
+Using separate image token
+next_token_route_probabilities: tensor([[0.9346]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9253]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9287]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9165]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9189]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9355]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9360]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9370]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9419]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9395]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9429]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9458]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9136]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8984]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9028]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9419]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9468]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9429]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9434]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9438]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9263]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9282]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9326]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9277]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9331]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9385]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9453]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9453]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9458]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9146]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9014]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9053]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9429]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9478]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9443]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9443]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9448]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9351]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9370]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9409]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9370]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9419]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9468]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9346]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9224]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9258]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9272]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9150]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9175]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9497]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9478]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9399]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9277]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9316]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9468]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9434]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9443]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9448]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9448]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9341]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9380]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9458]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9116]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9131]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9194]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9141]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9194]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9233]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9307]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9316]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9321]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9419]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9434]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9146]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9302]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9248]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9287]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9321]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9272]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9331]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9248]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9111]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9146]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9165]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9102]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9116]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9126]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9307]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9307]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9316]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9370]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9331]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9380]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9419]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9497]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9497]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9497]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9150]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9272]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9224]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9375]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9321]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9380]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9399]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9346]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9424]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9395]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9268]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9297]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9419]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9434]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9443]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9360]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9385]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9424]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9390]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9443]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9487]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9072]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8916]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8960]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9351]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9414]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9390]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9385]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9395]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8794]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8809]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8862]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8794]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8843]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8901]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8994]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8989]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8994]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9126]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9136]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9263]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9238]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9385]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9321]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9360]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9399]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9346]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9414]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8945]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8799]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8828]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9263]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9331]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9282]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9282]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9272]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9434]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9429]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9438]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9482]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9458]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8936]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9033]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9038]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9043]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9170]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9194]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9307]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9292]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9409]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9380]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9399]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9419]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9399]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9443]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9448]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9478]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9473]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9370]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9404]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8999]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8838]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8887]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9287]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9355]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9326]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9316]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9331]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9482]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9478]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9482]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9092]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9146]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9204]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9292]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9282]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9297]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9390]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9409]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9434]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9336]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9355]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9482]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9370]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9399]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9292]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9180]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9194]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9014]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8862]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8906]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9316]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9370]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9326]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9326]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9326]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9487]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9492]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9497]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9473]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9312]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9185]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9214]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9287]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9307]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9316]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9473]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9468]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9487]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9346]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9395]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9443]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9019]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8892]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.8921]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9321]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9375]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9341]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9341]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9341]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9482]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9482]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9497]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9126]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9185]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9233]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9312]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9312]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9316]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9414]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9434]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9321]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9458]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9409]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9443]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9463]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9434]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9487]], device='cuda:0', dtype=torch.float16)
+layer_num: 0 !!!!!!!!!!!!!!!!!! /n
+Layer 0 Question tokens routing proportions: 0.5384615384615384
+Layer 0 routed image tokens proportion: 0.7490234375
+layer_num: 1 !!!!!!!!!!!!!!!!!! /n
+Layer 1 Question tokens routing proportions: 0.5384615384615384
+Layer 1 routed image tokens proportion: 0.7431640625
+layer_num: 2 !!!!!!!!!!!!!!!!!! /n
+Layer 2 Question tokens routing proportions: 0.5384615384615384
+Layer 2 routed image tokens proportion: 0.7431640625
+layer_num: 3 !!!!!!!!!!!!!!!!!! /n
+Layer 3 Question tokens routing proportions: 0.5384615384615384
+Layer 3 routed image tokens proportion: 0.7431640625
+layer_num: 4 !!!!!!!!!!!!!!!!!! /n
+Layer 4 Question tokens routing proportions: 0.5384615384615384
+Layer 4 routed image tokens proportion: 0.7431640625
+layer_num: 5 !!!!!!!!!!!!!!!!!! /n
+Layer 5 Question tokens routing proportions: 0.5384615384615384
+Layer 5 routed image tokens proportion: 0.7431640625
+layer_num: 6 !!!!!!!!!!!!!!!!!! /n
+Layer 6 Question tokens routing proportions: 0.5384615384615384
+Layer 6 routed image tokens proportion: 0.7431640625
+layer_num: 7 !!!!!!!!!!!!!!!!!! /n
+Layer 7 Question tokens routing proportions: 0.5384615384615384
+Layer 7 routed image tokens proportion: 0.7431640625
+layer_num: 8 !!!!!!!!!!!!!!!!!! /n
+Layer 8 Question tokens routing proportions: 0.5384615384615384
+Layer 8 routed image tokens proportion: 0.7431640625
+layer_num: 9 !!!!!!!!!!!!!!!!!! /n
+Layer 9 Question tokens routing proportions: 0.5384615384615384
+Layer 9 routed image tokens proportion: 0.7431640625
+layer_num: 10 !!!!!!!!!!!!!!!!!! /n
+Layer 10 Question tokens routing proportions: 0.5384615384615384
+Layer 10 routed image tokens proportion: 0.7431640625
+layer_num: 11 !!!!!!!!!!!!!!!!!! /n
+Layer 11 Question tokens routing proportions: 0.5384615384615384
+Layer 11 routed image tokens proportion: 0.7431640625
+layer_num: 12 !!!!!!!!!!!!!!!!!! /n
+Layer 12 Question tokens routing proportions: 0.5384615384615384
+Layer 12 routed image tokens proportion: 0.7431640625
+layer_num: 13 !!!!!!!!!!!!!!!!!! /n
+Layer 13 Question tokens routing proportions: 0.5384615384615384
+Layer 13 routed image tokens proportion: 0.7431640625
+layer_num: 14 !!!!!!!!!!!!!!!!!! /n
+Layer 14 Question tokens routing proportions: 0.5384615384615384
+Layer 14 routed image tokens proportion: 0.7431640625
+layer_num: 15 !!!!!!!!!!!!!!!!!! /n
+Layer 15 Question tokens routing proportions: 0.5384615384615384
+Layer 15 routed image tokens proportion: 0.7431640625
+layer_num: 16 !!!!!!!!!!!!!!!!!! /n
+Layer 16 Question tokens routing proportions: 0.5384615384615384
+Layer 16 routed image tokens proportion: 0.7431640625
+layer_num: 17 !!!!!!!!!!!!!!!!!! /n
+Layer 17 Question tokens routing proportions: 0.5384615384615384
+Layer 17 routed image tokens proportion: 0.7431640625
+layer_num: 18 !!!!!!!!!!!!!!!!!! /n
+Layer 18 Question tokens routing proportions: 0.5384615384615384
+Layer 18 routed image tokens proportion: 0.7431640625
+layer_num: 19 !!!!!!!!!!!!!!!!!! /n
+Layer 19 Question tokens routing proportions: 0.5384615384615384
+Layer 19 routed image tokens proportion: 0.7431640625
+layer_num: 20 !!!!!!!!!!!!!!!!!! /n
+Layer 20 Question tokens routing proportions: 0.5384615384615384
+Layer 20 routed image tokens proportion: 0.7431640625
+layer_num: 21 !!!!!!!!!!!!!!!!!! /n
+Layer 21 Question tokens routing proportions: 0.5384615384615384
+Layer 21 routed image tokens proportion: 0.7431640625
+layer_num: 22 !!!!!!!!!!!!!!!!!! /n
+Layer 22 Question tokens routing proportions: 0.5384615384615384
+Layer 22 routed image tokens proportion: 0.7431640625
+layer_num: 23 !!!!!!!!!!!!!!!!!! /n
+Layer 23 Question tokens routing proportions: 0.5384615384615384
+Layer 23 routed image tokens proportion: 0.7431640625
+layer_num: 24 !!!!!!!!!!!!!!!!!! /n
+Layer 24 Question tokens routing proportions: 0.5384615384615384
+Layer 24 routed image tokens proportion: 0.7431640625
+layer_num: 25 !!!!!!!!!!!!!!!!!! /n
+Layer 25 Question tokens routing proportions: 0.5384615384615384
+Layer 25 routed image tokens proportion: 0.7431640625
+layer_num: 26 !!!!!!!!!!!!!!!!!! /n
+Layer 26 Question tokens routing proportions: 0.5384615384615384
+Layer 26 routed image tokens proportion: 0.7431640625
+layer_num: 27 !!!!!!!!!!!!!!!!!! /n
+Layer 27 Question tokens routing proportions: 0.5384615384615384
+Layer 27 routed image tokens proportion: 0.7431640625
+Number of output tokens: 36
+Question: Describe this image?
+Answer: The image features a white and white-haired dog standing in the grasses, holding canine. The dog is holding, which appears to be a white dog breedump

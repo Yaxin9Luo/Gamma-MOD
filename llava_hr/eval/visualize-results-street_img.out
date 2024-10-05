@@ -1,0 +1,104 @@
+[2024-09-11 16:25:19,242] [INFO] [real_accelerator.py:110:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+loading MOD-LLaVA-hr
+Image resolution: 500x375
+Using separate image token
+next_token_route_probabilities: tensor([[0.9453]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9419]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9497]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9170]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9033]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9067]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9429]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9478]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9429]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9448]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9443]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9473]], device='cuda:0', dtype=torch.float16)
+next_token_route_probabilities: tensor([[0.9487]], device='cuda:0', dtype=torch.float16)
+layer_num: 0 !!!!!!!!!!!!!!!!!! /n
+Layer 0 Question tokens routing proportions: 0.35714285714285715
+Layer 0 routed image tokens proportion: 0.7373046875
+layer_num: 1 !!!!!!!!!!!!!!!!!! /n
+Layer 1 Question tokens routing proportions: 0.35714285714285715
+Layer 1 routed image tokens proportion: 0.7265625
+layer_num: 2 !!!!!!!!!!!!!!!!!! /n
+Layer 2 Question tokens routing proportions: 0.35714285714285715
+Layer 2 routed image tokens proportion: 0.7265625
+layer_num: 3 !!!!!!!!!!!!!!!!!! /n
+Layer 3 Question tokens routing proportions: 0.35714285714285715
+Layer 3 routed image tokens proportion: 0.7265625
+layer_num: 4 !!!!!!!!!!!!!!!!!! /n
+Layer 4 Question tokens routing proportions: 0.35714285714285715
+Layer 4 routed image tokens proportion: 0.7265625
+layer_num: 5 !!!!!!!!!!!!!!!!!! /n
+Layer 5 Question tokens routing proportions: 0.35714285714285715
+Layer 5 routed image tokens proportion: 0.7265625
+layer_num: 6 !!!!!!!!!!!!!!!!!! /n
+Layer 6 Question tokens routing proportions: 0.35714285714285715
+Layer 6 routed image tokens proportion: 0.7265625
+layer_num: 7 !!!!!!!!!!!!!!!!!! /n
+Layer 7 Question tokens routing proportions: 0.35714285714285715
+Layer 7 routed image tokens proportion: 0.7265625
+layer_num: 8 !!!!!!!!!!!!!!!!!! /n
+Layer 8 Question tokens routing proportions: 0.35714285714285715
+Layer 8 routed image tokens proportion: 0.7265625
+layer_num: 9 !!!!!!!!!!!!!!!!!! /n
+Layer 9 Question tokens routing proportions: 0.35714285714285715
+Layer 9 routed image tokens proportion: 0.7265625
+layer_num: 10 !!!!!!!!!!!!!!!!!! /n
+Layer 10 Question tokens routing proportions: 0.35714285714285715
+Layer 10 routed image tokens proportion: 0.7265625
+layer_num: 11 !!!!!!!!!!!!!!!!!! /n
+Layer 11 Question tokens routing proportions: 0.35714285714285715
+Layer 11 routed image tokens proportion: 0.7265625
+layer_num: 12 !!!!!!!!!!!!!!!!!! /n
+Layer 12 Question tokens routing proportions: 0.35714285714285715
+Layer 12 routed image tokens proportion: 0.7265625
+layer_num: 13 !!!!!!!!!!!!!!!!!! /n
+Layer 13 Question tokens routing proportions: 0.35714285714285715
+Layer 13 routed image tokens proportion: 0.7265625
+layer_num: 14 !!!!!!!!!!!!!!!!!! /n
+Layer 14 Question tokens routing proportions: 0.35714285714285715
+Layer 14 routed image tokens proportion: 0.7265625
+layer_num: 15 !!!!!!!!!!!!!!!!!! /n
+Layer 15 Question tokens routing proportions: 0.35714285714285715
+Layer 15 routed image tokens proportion: 0.7265625
+layer_num: 16 !!!!!!!!!!!!!!!!!! /n
+Layer 16 Question tokens routing proportions: 0.35714285714285715
+Layer 16 routed image tokens proportion: 0.7265625
+layer_num: 17 !!!!!!!!!!!!!!!!!! /n
+Layer 17 Question tokens routing proportions: 0.35714285714285715
+Layer 17 routed image tokens proportion: 0.7265625
+layer_num: 18 !!!!!!!!!!!!!!!!!! /n
+Layer 18 Question tokens routing proportions: 0.35714285714285715
+Layer 18 routed image tokens proportion: 0.7265625
+layer_num: 19 !!!!!!!!!!!!!!!!!! /n
+Layer 19 Question tokens routing proportions: 0.35714285714285715
+Layer 19 routed image tokens proportion: 0.7265625
+layer_num: 20 !!!!!!!!!!!!!!!!!! /n
+Layer 20 Question tokens routing proportions: 0.35714285714285715
+Layer 20 routed image tokens proportion: 0.7265625
+layer_num: 21 !!!!!!!!!!!!!!!!!! /n
+Layer 21 Question tokens routing proportions: 0.35714285714285715
+Layer 21 routed image tokens proportion: 0.7265625
+layer_num: 22 !!!!!!!!!!!!!!!!!! /n
+Layer 22 Question tokens routing proportions: 0.35714285714285715
+Layer 22 routed image tokens proportion: 0.7265625
+layer_num: 23 !!!!!!!!!!!!!!!!!! /n
+Layer 23 Question tokens routing proportions: 0.35714285714285715
+Layer 23 routed image tokens proportion: 0.7265625
+layer_num: 24 !!!!!!!!!!!!!!!!!! /n
+Layer 24 Question tokens routing proportions: 0.35714285714285715
+Layer 24 routed image tokens proportion: 0.7265625
+layer_num: 25 !!!!!!!!!!!!!!!!!! /n
+Layer 25 Question tokens routing proportions: 0.35714285714285715
+Layer 25 routed image tokens proportion: 0.7265625
+layer_num: 26 !!!!!!!!!!!!!!!!!! /n
+Layer 26 Question tokens routing proportions: 0.35714285714285715
+Layer 26 routed image tokens proportion: 0.7265625
+layer_num: 27 !!!!!!!!!!!!!!!!!! /n
+Layer 27 Question tokens routing proportions: 0.35714285714285715
+Layer 27 routed image tokens proportion: 0.7265625
+Number of output tokens: 5
+Question: Which street is here?
+Answer: Bigelow Street

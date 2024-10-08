@@ -156,9 +156,9 @@ Gamma-MOD was tested on **three popular MLLMs** across **9 benchmark datasets**.
 
 | Model       | Training Time Reduction | Inference Time Reduction | Accuracy |
 |-------------|-------------------------|--------------------------|---------------|
-| LLaVA-HR-7B    | 31.0%                   | 53.2%                    | -1.5%          |
-| LLaVA-HR-13B    | 18.8%                   | 50.4%                    | -0.3%         |
-| LLaVA-HR-X-13B    | 17.4%                 | 58.6%                    | +0.4%          |
+| $\gamma$-MoD-LLaVA-HR-7B    | 31.0%                   | 53.2%                    | -1.5%          |
+| $\gamma$-MoD-LLaVA-HR-13B    | 18.8%                   | 50.4%                    | -0.3%         |
+| $\gamma$-MoD-LLaVA-HR-X-13B    | 17.4%                 | 58.6%                    | +0.4%          |
 
 For more details, check the [full report](link_to_experiment_report).(Coming soon!!!!!!!!!!)
 

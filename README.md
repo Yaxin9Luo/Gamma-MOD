@@ -4,12 +4,15 @@
 </p>
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue)]()
+[![Arxiv](https://img.shields.io/badge/📃-Arxiv-red)](https://arxiv.org/abs/placeholder)
+[![Open In Spaces](https://img.shields.io/badge/🤗-Open%20In%20Spaces-blue)](https://huggingface.co/YaxinLuo)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](link_to_license)
 [![Contact](https://img.shields.io/badge/Contact-Yaxin%20Luo-green)](mailto:yaxin.luo@example.com)
 
-**Gamma-MOD** is a novel approach to enhance computational efficiency in Multimodal Large Language Models (MLLMs) by incorporating **Mixture-of-Depth (MoD)** layers. This plug-and-play strategy seamlessly replaces redundant dense layers, significantly reducing computational costs while maintaining performance.
+## 📣 News
 
----
+- **[2024.10.09]**  🤗🤗🤗We release **$\gamma$-MOD**, a novel approach to enhance computational efficiency in Multimodal Large Language Models (MLLMs) by incorporating **Mixture-of-Depth (MoD)** layers. This plug-and-play strategy seamlessly replaces redundant dense layers, significantly reducing computational costs while maintaining performance.
+
 
 ## 🔗 Table of Contents
 - [Overview](#-overview)
@@ -24,11 +27,10 @@
 - [Contact](#-contact)
 - [License](#-license)
 
----
 
 ## 🚀 Overview
 
-**Gamma-MOD** is a novel approach to enhance computational efficiency in Multimodal Large Language Models (MLLMs) by incorporating **Mixture-of-Depth (MoD)** layers. This plug-and-play strategy seamlessly replaces redundant dense layers, significantly reducing computational costs while maintaining performance.
+**$\gamma$-MOD** is a novel approach to enhance computational efficiency in Multimodal Large Language Models (MLLMs) by incorporating **Mixture-of-Depth (MoD)** layers. This plug-and-play strategy seamlessly replaces redundant dense layers, significantly reducing computational costs while maintaining performance.
 
 ### 💡 Motivation
 
@@ -143,6 +145,11 @@ We also provide the stage-2 sft checkpoint for your convenience.
 | Gamma-MoD-llava-hr-13b | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-llava-hr-13b) |
 | Gamma-MoD-Mini-Gemini-HD-7b | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-Mini-Gemini-HD-7b) |
 ---
+## ⚖️ Evaluation
+We follow  [LLaVA-v1.5](https://github.com/haotian-liu/LLaVA/tree/main) to conduct evaluations. you should download [eval.zip](https://drive.google.com/file/d/1atZSBBrAX54yYpxtVVW33zFvcnaHeFPy/view?usp=sharing) and unzip it to `./playground/data/eval`. Please refer to [Evaluation.md](./Evaluation.md) to prepare the data.   
+
+Then, your can run our evaluation script `bash scripts/v1_5/eval.sh`. 
+
 ## 🔬 Experiments
 
 Gamma-MOD was tested on **three popular MLLMs** across **9 benchmark datasets**.
@@ -196,4 +203,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👀 Acknowledgments
 
-Special thanks to all contributors and the LLaVA project for inspiration.
+Special thanks to all contributors and the [LLaVA](https://github.com/haotian-liu/LLaVA) & [LLaVA-HR](https://github.com/luogen1996/LLaVA-HR) project for codebase.
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Yaxin9Luo/Gamma-MOD&type=Date)](https://star-history.com/#Yaxin9Luo/Gamma-MOD&Date)

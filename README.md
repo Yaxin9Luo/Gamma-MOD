@@ -219,13 +219,13 @@ If you use Gamma-MOD in your work, please cite:
 
 ## 📧 Contact
 
-For questions, please reach out to [Yaxin Luo](mailto:yaxin.luo@example.com).
+For questions, please reach out to [Yaxin Luo](yaxinluo999@163.com).
 
 ---
 
 ## 📜 License
 
-This project is licensed under the MIT License - see the [LICENSE](link_to_license) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 

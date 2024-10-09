@@ -109,19 +109,19 @@ Gamma-MOD results in significant efficiency improvements:
 ## 🛠️ Getting Started
 
 ### Installation
-
-1. Clone the repository and navigate to the LLaVA-HR folder:
+(Notice: Install the required packages and versions for the model you wish to modify to MoD version, below is for LLaVA-HR, for Mini-Gemini, just upgrade transformers to 4.36.2 as the official version)
+1. Clone the repository and navigate to the Gamma-MOD folder:
 
 ```bash
-git clone https://github.com/luogen1996/LLaVA-HR.git
-cd LLaVA-HR
+git clone https://github.com/Yaxin9Luo/Gamma-MOD.git
+cd Gamma-MOD
 ```
 
 2. Create and activate a new conda environment:
 
 ```bash
-conda create -n llava-hr python=3.10 -y
-conda activate llava-hr
+conda create -n gamma-mod python=3.10 -y
+conda activate gamma-mod
 ```
 
 3. Upgrade pip and install the package:
@@ -137,6 +137,27 @@ pip install -e .
 pip install ninja
 pip install flash-attn --no-build-isolation
 ```
+### Data Preparation
+Please refer to the original [LLaVA-HR](https://github.com/luogen1996/LLaVA-HR/tree/main) and [Mini-Gemini](https://github.com/dvlab-research/MGM/tree/main) for data preparation. Or whatever MLLM's offical repo you are using.
+
+### Training
+#### Stage 1: Pretraining
+Please download the caption annotations blip_laion_cc_sbu_558k.json and images from here. Move the downloaded files to the /data/data folder. Then run the following command to start the training process:
+```bash
+bash bash scripts/v1_5/pretrain_llava_hr.sh
+```
+We recommend to directly pre-trained projector, here are the link from official LLaVA-HR and Mini-Gemini.
+| Version | Vision Encoder | Projection | Pretrain Data | Pretraining schedule | Download |
+|---------|----------------|------------|---------------|----------------------|----------|
+| LLaVA-HR-7b | CLIP-L & ConvNeXt-L | MLP-2x | LCS-558K | 1e | [projector](https://huggingface.co/favor123/llava-hr-7b-pretrain-384) |
+| LLaVA-HR-X-13b | CLIP-L & ConvNeXt-XXL | MLP-2x | LCS-558K | 1e | [projector](https://huggingface.co/favor123/llava-hr-13b-x-sft-1024) |
+| Mini-Gemini-HD-7b | CLIP-L | MLP-2x | MGM-Pretrain | 1e | [projector](https://huggingface.co/YanweiLi/MGM-Pretrain) |
+
+
+#### Stage 2: Gamma-MOD Fine-Tuning
+##### Step 1: ARank analysis
+
+##### Step 2: Fine-Tuning
 
 ---
 

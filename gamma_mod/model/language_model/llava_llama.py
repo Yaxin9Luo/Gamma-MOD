@@ -118,10 +118,10 @@ class LlavaLlamaForCausalLM(LlamaForCausalLM, LlavaMetaForCausalLM):
             return_dict=return_dict
         )
         ######## below is for computing attention rank ############
-        # attention_weights = outputs.attentions
-        # for layer_num in range(len(attention_weights)):
-        #     attn = attention_weights[layer_num][0]
-        #     avg_head_rank = compute_attention_rank(attn,layer_num)
+        attention_weights = outputs.attentions
+        for layer_num in range(len(attention_weights)):
+            attn = attention_weights[layer_num][0]
+            avg_head_rank = compute_attention_rank(attn,layer_num)
     
         hidden_states = outputs[0]
         

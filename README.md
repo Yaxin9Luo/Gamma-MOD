@@ -1,4 +1,4 @@
-# Gamma-MOD: Mixture-of-Depth Adaptation for Multimodal Large Language Models
+# $\gamma$-MOD: Mixture-of-Depth Adaptation for Multimodal Large Language Models
 <p align="center">
      <img src="./asset/gamma_logo_processed.jpg" alt="Gamma-MOD Banner" width="50%">
 </p>
@@ -34,7 +34,7 @@
 
 ### 💡 Motivation
 
-Despite recent advancements in MLLMs, their high computational demands have limited practical applications, especially for real-time inference. Traditional Mixture-of-Experts (MoE) techniques have attempted to address this issue, but often fall short in achieving optimal efficiency. Gamma-MOD tackles this challenge by introducing a new paradigm that focuses on reducing activated tokens, offering superior efficiency compared to existing methods. Our approach is inspired by the concept of activated tokens and aims to transform dense MLLM layers into sparse MoD layers, ultimately making MLLMs more accessible and applicable in resource-constrained environments.
+Despite recent advancements in MLLMs, their high computational demands have limited practical applications, especially for real-time inference. Traditional Mixture-of-Experts (MoE) techniques have attempted to address this issue, but often fall short in achieving optimal efficiency. $\gamma$-MOD tackles this challenge by introducing a new paradigm that focuses on reducing activated tokens, offering superior efficiency compared to existing methods. Our approach is inspired by the concept of activated tokens and aims to transform dense MLLM layers into sparse MoD layers, ultimately making MLLMs more accessible and applicable in resource-constrained environments.
 
 ### ⭐ Key Features:
 - **ARank Metric**: Guides the replacement of redundant layers with MoD layers.
@@ -44,7 +44,7 @@ Despite recent advancements in MLLMs, their high computational demands have limi
 
 ### 📊 Efficiency Gains
 
-Gamma-MOD results in significant efficiency improvements:
+$\gamma$-MOD results in significant efficiency improvements:
 - **Training time**: Reduced by **31%**.
 - **Inference time**: Reduced by **53.2%**.
 - **FLOPs Reduction**: **51.6%** with minimal impact on accuracy.
@@ -52,7 +52,7 @@ Gamma-MOD results in significant efficiency improvements:
 ---
 ## 🎨 Visualization Results
 
-Our Gamma-MOD approach demonstrates impressive efficiency in routing tokens and focusing on critical information. Fig. 4 illustrates these results visually.
+Our $\gamma$-MOD approach demonstrates impressive efficiency in routing tokens and focusing on critical information. Fig. 4 illustrates these results visually.
 
 ### Key Observations:
 ![Visualization of Routing and Skipped Content](/asset/visualization.png)
@@ -69,7 +69,7 @@ Our Gamma-MOD approach demonstrates impressive efficiency in routing tokens and 
    - By routing out redundant tokens, the model can allocate more computational resources to important areas
    - Example: In the IQ test image (middle of first row), the model concentrates on arithmetic and geometric aspects, leading to more accurate responses
 
-This visualization demonstrates how Gamma-MOD effectively reduces computational overhead while maintaining the model's ability to process and respond to complex multimodal inputs.
+This visualization demonstrates how $\gamma$-MOD effectively reduces computational overhead while maintaining the model's ability to process and respond to complex multimodal inputs.
 
 ---
 
@@ -77,7 +77,7 @@ This visualization demonstrates how Gamma-MOD effectively reduces computational 
 
 ### Installation
 (Notice: Install the required packages and versions for the model you wish to modify to MoD version, below is for LLaVA-HR, for Mini-Gemini, just upgrade transformers to 4.36.2 as the official version)
-1. Clone the repository and navigate to the Gamma-MOD folder:
+1. Clone the repository and navigate to the $\gamma$-MOD folder:
 
 ```bash
 git clone https://github.com/Yaxin9Luo/Gamma-MOD.git
@@ -121,7 +121,7 @@ We recommend to directly pre-trained projector, here are the link from official 
 | Mini-Gemini-HD-7b | CLIP-L | MLP-2x | MGM-Pretrain | 1e | [projector](https://huggingface.co/YanweiLi/MGM-Pretrain) |
 
 
-#### Stage 2: Gamma-MOD Fine-Tuning
+#### Stage 2: $\gamma$-MOD Fine-Tuning
 ##### Step 1: ARank analysis
 Please run the stage-1 alignment model on any dataset you wish to compute the ARank.We will use sqa as an example. 
 ```bash
@@ -130,8 +130,8 @@ bash scripts/v1_5/eval_full/arank.sh /path/to/your/stage1_checkpoint
 We also provide the stage-1 checkpoint for your convenience.
 | Version | Download |
 |---------|----------|
-| Gamma-MoD-llava-hr-7b-stage1 | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-llava-hr-7b-stage1) |
-| Gamma-MoD-Mini-Gemini-HD-7b-stage1 | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-Mini-Gemini-HD-7b-stage1) |
+| $\gamma$-MOD-llava-hr-7b-stage1 | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-llava-hr-7b-stage1) |
+| $\gamma$-MOD-Mini-Gemini-HD-7b-stage1 | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-Mini-Gemini-HD-7b-stage1) |
 ##### Step 2: Fine-Tuning
 After you get the ARank, you can use the ARank to replace the dense layers in the original model. Reference to llava_llama_mod.py file and the initialize_mod_modules function.
 Then train the model with the following command:
@@ -141,9 +141,9 @@ bash /path/to/your/fine_tune_mod.sh
 We also provide the stage-2 sft checkpoint for your convenience.
 | Version | Download |
 |---------|----------|
-| Gamma-MoD-llava-hr-7b | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-llava-hr-7b) |
-| Gamma-MoD-llava-hr-13b | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-llava-hr-13b) |
-| Gamma-MoD-Mini-Gemini-HD-7b | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-Mini-Gemini-HD-7b) |
+| $\gamma$-MOD-llava-hr-7b | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-llava-hr-7b) |
+| $\gamma$-MOD-llava-hr-13b | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-llava-hr-13b) |
+| $\gamma$-MOD-Mini-Gemini-HD-7b | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-Mini-Gemini-HD-7b) |
 ---
 ## ⚖️ Evaluation
 We follow  [LLaVA-v1.5](https://github.com/haotian-liu/LLaVA/tree/main) to conduct evaluations. you should download [eval.zip](https://drive.google.com/file/d/1atZSBBrAX54yYpxtVVW33zFvcnaHeFPy/view?usp=sharing) and unzip it to `./playground/data/eval`. Please refer to [Evaluation.md](./Evaluation.md) to prepare the data.   
@@ -152,7 +152,7 @@ Then, your can run our evaluation script `bash scripts/v1_5/eval.sh`.
 
 ## 🔬 Experiments
 
-Gamma-MOD was tested on **three popular MLLMs** across **9 benchmark datasets**.
+$\gamma$-MOD was tested on **three popular MLLMs** across **9 benchmark datasets**.
 
 - **LLaVA-HR**: Training time reduced by **31%** and inference time by **53.2%**, with only **1.5%** accuracy drop.
 - **Generalization**: Demonstrated the ability to generalize across different MLLMs.
@@ -176,11 +176,11 @@ For more details, check the [full report](link_to_experiment_report).(Coming soo
 
 ## 📖 Citation
 
-If you use Gamma-MOD in your work, please cite:
+If you use $\gamma$-MOD in your work, please cite:
 
 ```bibtex
 @inproceedings{anonymous2025gammaMOD,
-  title={Gamma-MOD: Exploring Mixture-of-Depth Adaptation for Multimodal Large Language Models},
+  title={$\gamma$-MOD: Exploring Mixture-of-Depth Adaptation for Multimodal Large Language Models},
   author={Anonymous},
   booktitle={International Conference on Learning Representations},
   year={2025}

@@ -19,8 +19,8 @@
 - [Efficiency Gains](#-efficiency-gains)
 - [Getting Started](#-getting-started)
   - [Installation](#installation)
-  - [Prerequisites](#prerequisites)
-  - [Running the Model](#running-the-model)
+  - [Data Preparation](#data-preparation)
+  - [Training](#training)
 - [Experiments](#-experiments)
 - [Results](#-results)
 - [Citation](#-citation)
@@ -156,11 +156,28 @@ We recommend to directly pre-trained projector, here are the link from official 
 
 #### Stage 2: Gamma-MOD Fine-Tuning
 ##### Step 1: ARank analysis
-
+Please run the stage-1 alignment model on any dataset you wish to compute the ARank.We will use sqa as an example. 
+```bash
+bash scripts/v1_5/eval_full/sqa.sh /path/to/your/stage1_checkpoint 
+```
+We also provide the stage-1 checkpoint for your convenience.
+| Version | Download |
+|---------|----------|
+| Gamma-MoD-llava-hr-7b-stage1 | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-llava-hr-7b-stage1) |
+| Gamma-MoD-Mini-Gemini-HD-7b-stage1 | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-Mini-Gemini-HD-7b-stage1) |
 ##### Step 2: Fine-Tuning
-
+After you get the ARank, you can use the ARank to replace the dense layers in the original model. Reference to llava_llama_mod.py file and the initialize_mod_modules function.
+Then train the model with the following command:
+```bash
+bash /path/to/your/fine_tune_mod.sh
+```
+We also provide the stage-2 sft checkpoint for your convenience.
+| Version | Download |
+|---------|----------|
+| Gamma-MoD-llava-hr-7b | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-llava-hr-7b) |
+| Gamma-MoD-llava-hr-13b | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-llava-hr-13b) |
+| Gamma-MoD-Mini-Gemini-HD-7b | [model](https://huggingface.co/YaxinLuo/Gamma-MoD-Mini-Gemini-HD-7b) |
 ---
-
 ## 🔬 Experiments
 
 Gamma-MOD was tested on **three popular MLLMs** across **9 benchmark datasets**.

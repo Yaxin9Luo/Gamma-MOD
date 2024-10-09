@@ -1,6 +1,6 @@
 # $\gamma$-MOD: Mixture-of-Depth Adaptation for Multimodal Large Language Models
 <p align="center">
-     <img src="./asset/gamma_logo_processed.jpg" alt="Gamma-MOD Banner" width="50%">
+     <img src="./asset/gamma_logo_processed.png" alt="Gamma-MOD Banner" width="50%">
 </p>
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue)]()

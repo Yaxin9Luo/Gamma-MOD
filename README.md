@@ -30,11 +30,11 @@
 
 **Gamma-MOD** is a novel approach to enhance computational efficiency in Multimodal Large Language Models (MLLMs) by incorporating **Mixture-of-Depth (MoD)** layers. This plug-and-play strategy seamlessly replaces redundant dense layers, significantly reducing computational costs while maintaining performance.
 
-### Motivation
+### 💡 Motivation
 
 Despite recent advancements in MLLMs, their high computational demands have limited practical applications, especially for real-time inference. Traditional Mixture-of-Experts (MoE) techniques have attempted to address this issue, but often fall short in achieving optimal efficiency. Gamma-MOD tackles this challenge by introducing a new paradigm that focuses on reducing activated tokens, offering superior efficiency compared to existing methods. Our approach is inspired by the concept of activated tokens and aims to transform dense MLLM layers into sparse MoD layers, ultimately making MLLMs more accessible and applicable in resource-constrained environments.
 
-### Key Features:
+### ⭐ Key Features:
 - **ARank Metric**: Guides the replacement of redundant layers with MoD layers.
 - **Shared Vision-Language Router**: Facilitates cross-modality token routing.
 - **Masked Routing Learning**: Prevents critical tokens from being skipped during model adaptation.

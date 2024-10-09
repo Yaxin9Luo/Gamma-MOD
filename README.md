@@ -1,6 +1,6 @@
 # Gamma-MOD: Mixture-of-Depth Adaptation for Multimodal Large Language Models
 
-![Gamma-MOD Banner](/asset/gamma_logo.jpg)
+![Gamma-MOD Banner](/asset/gamma_logo_processed.jpg)
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](link_to_license)

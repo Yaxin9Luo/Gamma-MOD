@@ -14,10 +14,6 @@
 ## 🔗 Table of Contents
 - [Overview](#-overview)
 - [Visualization Results](#-visualization-results)
-- [Motivation](#-motivation)
-- [Key Contributions](#-key-contributions)
-- [Model Architecture](#-model-architecture)
-- [Efficiency Gains](#-efficiency-gains)
 - [Getting Started](#-getting-started)
   - [Installation](#installation)
   - [Data Preparation](#data-preparation)
@@ -32,19 +28,29 @@
 
 ## 🚀 Overview
 
-**Gamma-MOD** is inspired by **activated tokens** and aims to identify layer-level redundancy using a novel metric called **ARank** (Rank of Attention Maps). By transforming dense MLLM layers into **Mixture-of-Depth** layers, Gamma-MOD saves on computational costs while preserving model accuracy.
+**Gamma-MOD** is a novel approach to enhance computational efficiency in Multimodal Large Language Models (MLLMs) by incorporating **Mixture-of-Depth (MoD)** layers. This plug-and-play strategy seamlessly replaces redundant dense layers, significantly reducing computational costs while maintaining performance.
+
+### Motivation
+
+Despite recent advancements in MLLMs, their high computational demands have limited practical applications, especially for real-time inference. Traditional Mixture-of-Experts (MoE) techniques have attempted to address this issue, but often fall short in achieving optimal efficiency. Gamma-MOD tackles this challenge by introducing a new paradigm that focuses on reducing activated tokens, offering superior efficiency compared to existing methods. Our approach is inspired by the concept of activated tokens and aims to transform dense MLLM layers into sparse MoD layers, ultimately making MLLMs more accessible and applicable in resource-constrained environments.
 
 ### Key Features:
 - **ARank Metric**: Guides the replacement of redundant layers with MoD layers.
 - **Shared Vision-Language Router**: Facilitates cross-modality token routing.
 - **Masked Routing Learning**: Prevents critical tokens from being skipped during model adaptation.
-![Gamma-MOD Banner](/asset/motivations.png)
+![Gamma-MOD Banner](/asset/model_arch.png)
 
+### 📊 Efficiency Gains
+
+Gamma-MOD results in significant efficiency improvements:
+- **Training time**: Reduced by **31%**.
+- **Inference time**: Reduced by **53.2%**.
+- **FLOPs Reduction**: **51.6%** with minimal impact on accuracy.
+![Training Efficiency](/asset/Efficiency.png)
 ---
 ## 🎨 Visualization Results
 
 Our Gamma-MOD approach demonstrates impressive efficiency in routing tokens and focusing on critical information. Fig. 4 illustrates these results visually.
-
 
 ### Key Observations:
 ![Visualization of Routing and Skipped Content](/asset/visualization.png)
@@ -62,48 +68,6 @@ Our Gamma-MOD approach demonstrates impressive efficiency in routing tokens and 
    - Example: In the IQ test image (middle of first row), the model concentrates on arithmetic and geometric aspects, leading to more accurate responses
 
 This visualization demonstrates how Gamma-MOD effectively reduces computational overhead while maintaining the model's ability to process and respond to complex multimodal inputs.
-
----
-## 🎯 Motivation
-
-Despite advancements in MLLMs, their **high computational costs** limit practical application, particularly for real-time inference. While **Mixture-of-Experts (MoE)** techniques help reduce active parameters, Gamma-MOD reduces **activated tokens**, offering superior efficiency.
-
----
-
-## ✨ Key Contributions
-
-1. **Mixture-of-Depth Framework**: Introduces a computationally efficient framework to transform dense MLLM layers into sparse MoD layers.
-2. **ARank Metric**: Provides a method to identify layer-level redundancy for strategic deployment of MoD layers.
-3. **Experimental Validation**: Achieves **51.6% reduction in computational costs** with minimal performance drop (~1.5%).
-
----
-
-## 🏗️ Model Architecture
-
-Gamma-MOD involves two main stages:
-
-1. **Vision-Language Alignment**: Aligns visual and textual modalities, using ARank to identify redundant layers.
-2. **Instruction Tuning**: Integrates MoD layers, with **masked routing learning** to avoid skipping critical tokens.
-
-![Model Diagram](/asset/model_arch.png)
-
-### Example Flow:
-1. **Input Processing**: Visual and text features are aligned.
-2. **Routing with ARank**: Redundant dense layers are replaced.
-3. **Final Tuning**: Optimizes MoD layers for minimal computational costs.
-
----
-
-## 📊 Efficiency Gains
-
-Gamma-MOD results in significant efficiency improvements:
-- **Training time**: Reduced by **31%**.
-- **Inference time**: Reduced by **53.2%**.
-- **FLOPs Reduction**: **51.6%** with minimal impact on accuracy.
-
-| Training Efficiency |
-![Training Efficiency](/asset/Efficiency.png)
-
 
 ---
 

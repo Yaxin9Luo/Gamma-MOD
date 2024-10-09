@@ -68,27 +68,6 @@ class MoDCausalLMOutputWithPast(ModelOutput):
     attentions: Optional[Tuple[torch.FloatTensor]] = None
     mod_loss_list: Optional[Tuple[torch.FloatTensor]] = None
     route_index : Optional[torch.FloatTensor] = None
-def visualize_attention(attention_weights, layer_num, head_num, file_path):
-    """
-    Visualize and save attention weights for a specific layer and head.
-
-    Parameters:
-    attention_weights (tensor): The attention weights from the model.
-    layer_num (int): The layer number to visualize.
-    head_num (int): The head number to visualize.
-    file_path (str): The path where the image will be saved.
-    """
-    # attention_weights has shape (batch_size, num_heads, seq_len, seq_len)
-    # Here, attention_weights[0] selects the first example in the batch
-    # attention_weights[0][head_num] selects the specified head
-    attention_weights = F.softmax(attention_weights, dim=-1)
-    attn = attention_weights[0, head_num].detach().cpu().numpy()
-    sns.heatmap(attn,cmap='Reds')
-    plt.title(f'Attention Weights - Layer {layer_num + 1}, Head {head_num + 1}')
-    plt.xlabel('Key Position')
-    plt.ylabel('Query Position')
-    plt.savefig(file_path)
-    plt.close()
 def LlamaDecoderLayer(self):
     def forward(
         # self,
@@ -163,24 +142,6 @@ def MoDLlamaDecoderLayer_forward(self):
         route_probabilities = F.softmax(router_logits, dim=-1)[:, :, 1]  # align with MOE
         ###################### mask for generation token #########################
         if question_token_len <= 0:
-            ############# only text stage #############
-            # top_k = int(math.ceil(seq_len * 0.25))
-            # mod_token_prob_mask = torch.ones(batch_size, seq_len, dtype=hidden_states.dtype, device=hidden_states.device)
-            # mod_token_prob_mask[labels != -100] = 0
-            ################################### check for correctness ###########
-            # print(mod_token_prob_mask[0,:])
-            # print(labels[0,:])
-            # mod_token_prob_mask_list = mod_token_prob_mask[0, :].tolist()
-            # labels_list = labels[0, :].tolist()
-            # with open("/data/luogen_code/LLaVA-HR-OCR/mod_token_prob_mask_values.txt", "w") as f:
-            #        f.write("mod_token_prob_mask:\n")
-            #     for value in mod_token_prob_mask_list:
-            #         f.write(f"{value}\n")
-            # with open("/data/luogen_code/LLaVA-HR-OCR/labels_values.txt", "w") as f:
-            #     f.write("labels:\n")
-            #     for value in labels_list:
-            #         f.write(f"{value}\n")
-            ####################################################################
             top_k = seq_len
             token_weights, token_index = torch.topk(route_probabilities, top_k, dim=-1)
         else:
@@ -213,7 +174,6 @@ def MoDLlamaDecoderLayer_forward(self):
         selected_hidden_states = (residual + selected_hidden_states)
         hidden_states = hidden_states.scatter(dim=1, index=indices_expanded, src=selected_hidden_states) # if hidden_states now is [bs,topk,dim]
         outputs = (hidden_states,)
-        # outputs = (selected_hidden_states,)
         if output_attentions:
             outputs += (self_attn_weights,)
         if use_cache:
@@ -226,14 +186,7 @@ def MoDLlamaDecoderLayer_forward(self):
         return outputs
     return forward
 def MoDLlamaDecoderLayer_forward_inference(self):
-    if not hasattr(self, 'total_tokens'):
-        self.total_tokens = 0
-    if not hasattr(self, 'routed_tokens'):
-        self.routed_tokens = 0
-    # if not hasattr(self, 'route_probabilities'):
-    #     self.route_probabilities = []
     def forward(
-        # self,
         hidden_states: torch.Tensor,
         attention_mask: Optional[torch.Tensor] = None,
         position_ids: Optional[torch.LongTensor] = None,
@@ -260,11 +213,7 @@ def MoDLlamaDecoderLayer_forward_inference(self):
         past_key_value_length = past_key_value[0].shape[-2] if past_key_value is not None else 0
         router_logits = self.router(self.input_layernorm(hidden_states))
         route_probabilities = F.softmax(router_logits, dim=-1)[:, :, 1] # [bs,seq_len]
-        self.total_tokens += seq_len
         if seq_len <= 1 and route_probabilities[0,0] < 0.5:
-            # # Update routed tokens count
-            self.routed_tokens += seq_len
-            # print(f"next_token_route_probabilities: {route_probabilities}")
             outputs = (hidden_states,)
             if output_attentions:
                 outputs += (None,)
@@ -273,27 +222,15 @@ def MoDLlamaDecoderLayer_forward_inference(self):
             return outputs
         else:
             if seq_len > 1:
-                # token_weights, token_index = torch.topk(route_probabilities, top_k, dim=-1) # align with MOE
-                # selected_tokens, index = torch.sort(token_index, dim=1) # both are [bs, 223(topk of tokens)]
-                # r_weights = torch.gather(route_probabilities, dim=1, index=selected_tokens)
-                # indices_expanded = selected_tokens.unsqueeze(-1).expand(-1, -1, dim)
-                # selected_hidden_states = torch.gather(input=hidden_states, dim=1, index=indices_expanded)
-                ################## select by threshold #################
                 high_prob_mask = route_probabilities > 0.005
                 batch_indices, token_indices = high_prob_mask.nonzero(as_tuple=True)
                 selected_tokens = token_indices.view(1,batch_indices.size(0))
                 selected_hidden_states = hidden_states[:, token_indices, :]
-                                
-                tokens_chosen = selected_hidden_states.shape[1]  # Sum of chosen tokens per batch
-                self.routed_tokens += (seq_len - int(tokens_chosen)) # Update routed tokens count for prefilling stage
-                # self.route_probabilities.append(route_probabilities)
-                # print(f" total tokens: {seq_len} !!!!!!!\n")
-                # print(f" routed tokens in prefilling: {(seq_len - int(tokens_chosen))} !!!!!!!\n")
+                tokens_chosen = selected_hidden_states.shape[1] 
                 new_attention_mask = torch.zeros(batch_size, 1, int(tokens_chosen), int(tokens_chosen)).to(selected_hidden_states.device)
                 upper_tri_indices = torch.triu_indices(row=int(tokens_chosen), col=int(tokens_chosen), offset=1)
-                ##########################################################################
                 r_weights = torch.gather(route_probabilities, dim=1, index=selected_tokens)
-                new_attention_mask[:, :, upper_tri_indices[0], upper_tri_indices[1]] = -65504. # torch.Size([1, 1, 14, 14])
+                new_attention_mask[:, :, upper_tri_indices[0], upper_tri_indices[1]] = -65504. 
                 if past_key_value is not None:
                     new_position_ids = torch.arange(
                         past_key_value_length, seq_len + past_key_value_length,
@@ -324,18 +261,14 @@ def MoDLlamaDecoderLayer_forward_inference(self):
                 use_cache=use_cache,
             )
             selected_hidden_states = residual + selected_hidden_states
-            # Fully Connected
             residual = selected_hidden_states
             selected_hidden_states = self.post_attention_layernorm(selected_hidden_states)
             selected_hidden_states = self.mlp(selected_hidden_states) * r_weights.unsqueeze(-1)
-            #selected_hidden_states = self.mlp(selected_hidden_states)
             selected_hidden_states = (residual + selected_hidden_states)
             outputs = (selected_hidden_states,)
             if seq_len <= 1:
                 outputs = (selected_hidden_states,)
-            else:
-                #hidden_states[:, :tokens_to_remain, :] = selected_hidden_states
-                
+            else:                
                 indices_expanded = selected_tokens.unsqueeze(-1).expand(-1, -1, dim)
                 hidden_states = hidden_states.scatter(dim=1, index=indices_expanded, src=selected_hidden_states) # if hidden_states now is [bs,topk,dim]
                 outputs = (hidden_states,)
@@ -520,8 +453,6 @@ class MoDLLaVALlamaForCausalLM(LlamaForCausalLM, LlavaMetaForCausalLM):
         )
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
         input_ids, attention_mask, past_key_values, inputs_embeds, labels = self.prepare_inputs_labels_for_multimodal(input_ids, attention_mask, past_key_values, labels, images)
-        # labels=[bs,sequence_len] ([8,1466]), inputs_embeds=[bs,sequence_len,hidden_size](8,1466,4096), attention_mask=[bs,sequence_len]
-        # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
         outputs = self.model(
             input_ids=input_ids,
             attention_mask=attention_mask,
@@ -537,38 +468,6 @@ class MoDLLaVALlamaForCausalLM(LlamaForCausalLM, LlavaMetaForCausalLM):
         hidden_states = outputs[0]
         logits = self.lm_head(hidden_states)
         
-        ####################### This is for methods which will throw tokens after MoD layers #########################
-        # padding_length = labels.size(1) - logits.size(1)
-        # if padding_length > 0:
-        #     labels = labels[...,padding_length:]
-        ############################################################################################################
-        
-        ######### calculate the percentage of routed tokens used for speed_evaluation ############
-        mod_layers_idx = self.config.mod['mod_layers_idx']
-        for idx in mod_layers_idx:
-            self.total_tokens += self.model.layers[idx].total_tokens
-            self.routed_tokens += self.model.layers[idx].routed_tokens
-
-        # Calculate and print the overall percentage
-        if self.total_tokens > 0:
-            percentage = (self.routed_tokens / self.total_tokens) * 100
-            print(f"Overall percentage of routed tokens: {percentage:.2f}%")
-            
-            
-        # ############### calculate the avg route probability used for visualization ############
-        # mod_layers_idx = self.config.mod['mod_layers_idx']
-        # # Initialize a list to store route probabilities for each layer
-        # route_probs_per_layer = []
-        # for idx in mod_layers_idx:
-        #     layer_route_probs = self.model.layers[idx].route_probabilities
-        #     # print(f"Layer {idx} route probabilities: {layer_route_probs[0]}")
-        #     route_probs_per_layer.append(layer_route_probs[0])  # Assuming batch size 1
-        # self.all_samples_route_probs.append(route_probs_per_layer)
-        # first_layer_probs = route_probs_per_layer[0]
-        # # print(f"Route probabilities for the first modular layer: {first_layer_probs}")
-            
-            
-    
         loss = None
         if labels is not None:
             # Shift so that tokens < n predict n
@@ -683,15 +582,12 @@ class EvalMoDLLaVALlamaForCausalLM(MoDLLaVALlamaForCausalLM):
         # Initialize counters for the entire model
         self.total_tokens = 0
         self.routed_tokens = 0
-        # self.route_probabilities = []
         for idx in mod_layers_idx:
-            # self.model.layers[idx].router = nn.Linear(self.config.hidden_size, 2, bias=False) # not share router
             self.model.layers[idx].router = router # share router 
             self.model.layers[idx].forward = MoDLlamaDecoderLayer_forward_inference(self.model.layers[idx])
             # Initialize counters for each layer
             self.model.layers[idx].total_tokens = 0
             self.model.layers[idx].routed_tokens = 0
-            # self.model.layers[idx].route_probabilities = []
         self.model.forward = MoDLlamaModel_forward(self.model)
 
 AutoConfig.register("mod_llava_llama", MoDLLaVALlamaConfig)

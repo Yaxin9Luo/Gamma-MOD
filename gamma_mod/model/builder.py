@@ -20,7 +20,6 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, BitsAn
 import torch
 from gamma_mod.model import *
 from gamma_mod.constants import DEFAULT_IMAGE_PATCH_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
-from gamma_mod.model.language_model.llava_llama_moe import EvalMoELLaVALlamaForCausalLM
 from gamma_mod.model.language_model.llava_llama_mod import EvalMoDLLaVALlamaForCausalLM
 from gamma_mod.model.language_model.llava_llama import LlavaLlamaForCausalLM
 
@@ -126,24 +125,13 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=True)
                     model = LlavaMPTForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
                 elif 'mod' in model_name.lower():
-                    if 'phi' in model_name.lower():
-                        print("loading MOD-Phi-LLaVA-hr")
-                        tokenizer = AutoTokenizer.from_pretrained(model_base, use_fast=False)
-                        model = MODLlavaPhiForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=cfg_pretrained, **kwargs)
-                    else:
-                        print("loading MOD-LLaVA-hr")
-                        tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=True)
-                        model = EvalMoDLLaVALlamaForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
+                    print("loading MOD-LLaVA-hr")
+                    tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=True)
+                    model = EvalMoDLLaVALlamaForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
                 else:
-                    if 'phi' in model_name.lower():
-                        print("loading Phi-LLaVA-hr")
-                        tokenizer = AutoTokenizer.from_pretrained(model_base, use_fast=False)
-                        model = LlavaPhiForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=cfg_pretrained, **kwargs)
-                    else:
-                        print("loading original LLava-hr")
-                        tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=True)
-                        model = LlavaLlamaForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
-                        # model.cuda()
+                    print("loading original LLava-hr")
+                    tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=True)
+                    model = LlavaLlamaForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
     else:
         # Load language model
         if model_base is not None:

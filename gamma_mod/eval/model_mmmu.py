@@ -23,7 +23,7 @@ def run_model(args, samples, model, call_model_engine_fn=None, tokenizer=None, p
     total_inference_time = 0
     total_num_tokens = 0
     total_samples = 0
-    max_samples = 2000000000
+    max_samples = 10000
     start_time = time.time()  # Start measuring total time
     with torch.no_grad():
         for sample in tqdm(samples):
@@ -58,7 +58,7 @@ def run_model(args, samples, model, call_model_engine_fn=None, tokenizer=None, p
                         top_p=args.top_p,
                         num_beams=args.num_beams,
                         # no_repeat_ngram_size=3,
-                        max_new_tokens=10,
+                        max_new_tokens=1,
                         output_attentions=True,
                         use_cache=True)
                     inference_time = time.time() - start_time  # Calculate inference time

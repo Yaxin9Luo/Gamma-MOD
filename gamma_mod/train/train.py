@@ -43,7 +43,6 @@ from gamma_mod.utils import disable_torch_init
 
 from gamma_mod.model.language_model.llava_llama_mod import MoDLLaVALlamaForCausalLM
 from gamma_mod.model.language_model.llava_llama import LlavaLlamaForCausalLM
-from gamma_mod.model.language_model.llava_phi3 import LlavaPhiForCausalLM
 local_rank = None
 
 
@@ -68,40 +67,16 @@ class ModelArguments:
     mm_vision_select_feature: Optional[str] = field(default="patch")
     is_multipath_encoder: bool = field(default=False)
     vision_tower_slow: Optional[str] = field(default='convnext_large_mlp.clip_laion2b_ft_320')
-    scale_up_train_llm : bool = field(default=False) # if scale up llm 
-    # MOE =============================================================
+    ########################### MOD Arguments ###########################
     mod_enable: bool = False
-    moe_enable: bool = False
-    train_modules: Optional[List[str]] = field(default=None, metadata={"help": ""})
-    moe_mode: str = field(
-        default="second_half",
-        metadata={
-            "help": "The backend to be used for half precision.",
-            "choices": ["first_half", "second_half", "sparse", "dense"],
-        },
-    )
-    moe_layers_idx: Optional[List[int]] = field(default=None, metadata={"help": "where to place moe layers."})
-    ep_size: int = 1
-    num_experts: Optional[List[int]] = field(default=4, metadata={"help": "number of experts for each moe layer."})
-    top_k_experts: int = field(
-        default=2,
-        metadata={
-            "help": "Top-k experts to deal with tokens.",
-            "choices": [1, 2],
-        },
-    )
     mod_mode: str = field(
         default="sparse",
         metadata={
-            "help": "The backend to be used for half precision.",
+            "help": "Where to insert mod layers.",
             "choices": ["first_half", "second_half", "sparse", "dense", "first_last_dense","last_two_thirds","first_five_dense","arank_mod"],
         },
     )
-    mod_layers_idx: Optional[List[int]] = field(default=None, metadata={"help": "where to place moe layers."})
-    capacity_factor: float = 0.125
-    eval_capacity_factor: float = 2.
-    min_capacity: int = 0
-    use_residual: bool = False
+    capacity_factor: float = 0.5
     router_aux_loss_coef: float = 0.01
     # =============================================================
 @dataclass
@@ -266,12 +241,6 @@ def safe_save_model_for_hf_trainer(trainer: transformers.Trainer,
                                    output_dir: str):
     """Collects the state dict and dump to disk."""
     if getattr(trainer.args, "freeze_mm_mlp_adapter", False):
-        # for key in trainer.model.state_dict().keys():
-        #     print(key)
-        # exit()
-        # for name, param in trainer.model.named_parameters():
-        #     print(f"{name}: {param.dtype}")
-        # exit()
         trainer.model.to(dtype=torch.float32)
         included_keys = ['model.layers', 'lm_head', 'model.embed_tokens',"model.norm"]
         llama_state_dict = {
@@ -279,31 +248,9 @@ def safe_save_model_for_hf_trainer(trainer: transformers.Trainer,
             for k, v in trainer.model.state_dict().items() 
             if any(k.startswith(key) for key in included_keys)
         }
-
-        # print("Parameters to be saved:")
-        # for k in llama_state_dict.keys():
-        #     print(k)
-        # trainer.model.config.save_pretrained(output_dir)
         save_model_in_parts(llama_state_dict, output_dir)
         print(f"LlavaLlamaModel checkpoint saved ")
         return
-    # if getattr(trainer.args, "tune_mm_mlp_adapter", False):
-    #     # for key in trainer.model.state_dict().keys():
-    #     #     print(key)
-    #     # exit()
-    #     # for name, param in trainer.model.named_parameters():
-    #     #     print(f"{name}: {param.dtype}")
-    #     # exit()
-    #     # trainer.model.to(dtype=torch.float32)
-    #     full_state_dict = trainer.model.state_dict()
-
-    #     # print("Parameters to be saved:")
-    #     # for k in llama_state_dict.keys():
-    #     #     print(k)
-    #     trainer.model.config.save_pretrained(output_dir)
-    #     save_model_in_parts(full_state_dict, output_dir)
-    #     print(f"LlavaLlamaModel checkpoint saved ")
-    #     return
     if getattr(trainer.args, "tune_mm_mlp_adapter", False):
         # Only save Adapter
         keys_to_match = ['mm_projector','align_stages']
@@ -479,24 +426,6 @@ def add_adversarial_example(ques, refs, ans, template_, neg_prob=0.3):
     a1=ans
     return [q0,q1],[a0,a1]
 
-# def add_adversarial_example(ques, refs, ans, template_, neg_prob=0.3):
-#     if random.random() <= neg_prob:
-#         q0=ques.replace(template_,Instruction_Mappings[template_])
-#         q0+=' A possible answer is \'%s\', please confirm whether this answer is correct by responding with either \'yes\' or \'no\'?.'% refs
-#         a0='No.'
-#         q1=ques.replace('<image>','')
-#         a1=ans
-#         return [q0,q1],[a0,a1]
-#     q0=ques.replace(template_,Instruction_Mappings[template_])
-#     q0+=' A possible answer is \'%s\', please confirm whether this answer is correct by responding with either \'yes\' or \'no\'?.'% refs
-#     a0='Yes.'
-#     q1=ques.replace('<image>','')
-#     a1=ans
-#     return [q0,q1],[a0,a1]
-
-
-
-
 
 def split_convs(source):
     ques = []
@@ -557,20 +486,6 @@ def add_robust_tokens(source,adversarial_prob=0.3):
             })
     return new_source
 
-# def add_robust_tokens(source):
-#     ques, ans, refs = split_convs(source)
-#     new_source = []
-#     for j in range(len(ques)):
-#         ques_, ans_, _ = add_random_reference(ques[j], refs[j], ans[j])
-#         new_source.append({
-#             'from': 'human',
-#             'value': ques_
-#         })
-#         new_source.append({
-#             'from': 'gpt',
-#             'value': ans_
-#         })
-#     return new_source
 
 
 def preprocess_robust(
@@ -1187,10 +1102,6 @@ class LazySupervisedDataset(Dataset):
         if isinstance(i, int):
             data_dict = dict(input_ids=data_dict["input_ids"][0],
                              labels=data_dict["labels"][0])
-        # if modality_token in TEXT_TOKEN:
-        #     print(modality_token)
-        # if not ('image' in self.list_data_dict[i]):
-        #     print(modality_token)
         if self.data_args.lavin_enable:
             data_dict['input_ids'] = torch.cat([data_dict['input_ids'][:1],
                                                 torch.tensor([self.tokenizer.convert_tokens_to_ids(modality_token)],
@@ -1217,7 +1128,6 @@ class DataCollatorForSupervisedDataset(object):
     def __call__(self, instances: Sequence[Dict]) -> Dict[str, torch.Tensor]:
         input_ids, labels = tuple([instance[key] for instance in instances]
                                   for key in ("input_ids", "labels"))
-        # self.tokenizer.pad_token = self.tokenizer.eos_token # usual trick when changing llm to llama3
         input_ids = torch.nn.utils.rnn.pad_sequence(
             input_ids,
             batch_first=True,
@@ -1279,52 +1189,29 @@ def train():
             )
         ))
     if model_args.vision_tower is not None:
-        if not model_args.moe_enable:
-            if 'mpt' in model_args.model_name_or_path:
-                config = transformers.AutoConfig.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
-                config.attn_config['attn_impl'] = training_args.mpt_attn_impl
-                model = LlavaMPTForCausalLM.from_pretrained(
-                    model_args.model_name_or_path,
-                    config=config,
-                    cache_dir=training_args.cache_dir,
-                    **bnb_model_from_pretrained_args
-                )
-            if model_args.mod_enable:
-                if 'Phi' in model_args.model_name_or_path:
-                    print("loading llava-phi3")
-                    model = LlavaPhiForCausalLM.from_pretrained(
-                        model_args.model_name_or_path,
-                        cache_dir=training_args.cache_dir,
-                        **bnb_model_from_pretrained_args
-                    )
-                else:
-                    print("loading MoD Model")
-                    model = MoDLLaVALlamaForCausalLM.from_pretrained(
-                            model_args.model_name_or_path,
-                            cache_dir=training_args.cache_dir,
-                            **bnb_model_from_pretrained_args
-                        )
-            else: # pretrain in here
-                if 'Phi' in model_args.model_name_or_path:
-                    print("loading llava-phi3")
-                    model = LlavaPhiForCausalLM.from_pretrained(
-                        model_args.model_name_or_path,
-                        cache_dir=training_args.cache_dir,
-                        **bnb_model_from_pretrained_args
-                    )
-                else:
-                    print("loading llava")
-                    model = LlavaLlamaForCausalLM.from_pretrained(
-                        model_args.model_name_or_path,
-                        cache_dir=training_args.cache_dir,
-                        **bnb_model_from_pretrained_args
-                    )
-        else:
-            model = MoELLaVALlamaForCausalLM.from_pretrained(
+        if 'mpt' in model_args.model_name_or_path:
+            config = transformers.AutoConfig.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
+            config.attn_config['attn_impl'] = training_args.mpt_attn_impl
+            model = LlavaMPTForCausalLM.from_pretrained(
+                model_args.model_name_or_path,
+                config=config,
+                cache_dir=training_args.cache_dir,
+                **bnb_model_from_pretrained_args
+            )
+        if model_args.mod_enable:
+            print("loading MoD Model")
+            model = MoDLLaVALlamaForCausalLM.from_pretrained(
                     model_args.model_name_or_path,
                     cache_dir=training_args.cache_dir,
                     **bnb_model_from_pretrained_args
                 )
+        else: # pretrain in here
+            print("loading llava")
+            model = LlavaLlamaForCausalLM.from_pretrained(
+                model_args.model_name_or_path,
+                cache_dir=training_args.cache_dir,
+                **bnb_model_from_pretrained_args
+            )
     else:
         print("loading llama")
         model = transformers.LlamaForCausalLM.from_pretrained(
@@ -1355,11 +1242,6 @@ def train():
     if model_args.mod_enable:
         model.initialize_mod_modules(model_args=model_args)
         print("MoD enabled")
-    ############# MOE #############
-    # training_args.moe_enable = model_args.moe_enable
-    # if model_args.moe_enable:
-    #     model.initialize_moe_modules(model_args=model_args)
-    ###############################
     if training_args.lora_enable:
         from peft import LoraConfig, get_peft_model
         lora_config = LoraConfig(
@@ -1412,15 +1294,6 @@ def train():
             conversation_lib.default_conversation = conversation_lib.conv_templates[model_args.version]
         else:
             conversation_lib.default_conversation = conversation_lib.conv_templates["vicuna_v1"]
-    
-
-    ############ if scale up llm ############
-    if model_args.scale_up_train_llm:
-        for layer in model.model.layers[-24:]:
-            for param in layer.parameters():
-                param.requires_grad = True
-        for param in model.lm_head.parameters():
-            param.requires_grad = False
     
     if model_args.vision_tower is not None:
         model.get_model().initialize_vision_modules(
@@ -1504,14 +1377,7 @@ def train():
             if param.requires_grad:
                 total += param.nelement()
                 trainable_params.append(name)
-        # rank0_print('   trainable params: ',trainable_params)
         rank0_print('  + Number of trainable params: %.2fM' % (total / 1e6))
-    #### check trainable layers ########
-    # print("Checking which parts of the model are trainable:")
-    # for name, param in model.named_parameters():
-    #     print(f"{name} is {'trainable' if param.requires_grad else 'frozen'}")
-    # exit()
-    ####################################
     if training_args.bits in [4, 8]:
         from peft.tuners.lora import LoraLayer
         for name, module in model.named_modules():
@@ -1536,7 +1402,6 @@ def train():
     else:
         trainer.train()
     trainer.save_state()
-    # model.model.layers.save_pretrained('/data/luogen_code/LLaVA-HR-OCR/checkpoints/scale_up_llm_10b')
     model.config.use_cache = True
 
     if training_args.lora_enable:

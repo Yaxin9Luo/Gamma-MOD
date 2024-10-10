@@ -203,7 +203,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👀 Acknowledgments
 
-Special thanks to all contributors and the [LLaVA](https://github.com/haotian-liu/LLaVA) & [LLaVA-HR](https://github.com/luogen1996/LLaVA-HR) project for codebase.
+Special thanks to all contributors and the [LLaVA](https://github.com/haotian-liu/LLaVA) & [LLaVA-HR](https://github.com/luogen1996/LLaVA-HR) & [MGM](https://github.com/dvlab-research/MGM) project for codebase.
+
+We are also thankful to [LLaVA-pp](https://github.com/mbzuai-oryx/LLaVA-pp), [MoE-LLaVA](https://github.com/PKU-YuanGroup/MoE-LLaVA) for releasing their models and code as open-source contributions.
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Yaxin9Luo/Gamma-MOD&type=Date)](https://star-history.com/#Yaxin9Luo/Gamma-MOD&Date)

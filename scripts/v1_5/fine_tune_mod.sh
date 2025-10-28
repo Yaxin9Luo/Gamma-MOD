@@ -1,5 +1,5 @@
 #!/bin/bash
-deepspeed llava_hr/train/train_mem.py \
+deepspeed gamma_mod/train/train_mem.py \
     --capacity_factor 0.5 \
     --mod_enable True  \
     --mod_mode 'arank_mod' \
